@@ -12,8 +12,8 @@ export default function HomePage() {
           Patryk Barber
         </h1>
         <p className="mt-6 max-w-2xl text-lg leading-8 text-barber-muted">
-          Fundament aplikacji jest gotowy pod publiczną stronę, rezerwacje, konta klientów i panel
-          admina. Pełny booking engine powstanie w kolejnym etapie.
+          Fundament aplikacji jest gotowy pod publiczną stronę, konta klientów i panel admina.
+          Podstawowy booking engine pozwala wybrać usługę, termin i zarządzać wizytami w koncie.
         </p>
       </div>
 
@@ -37,9 +37,9 @@ export default function HomePage() {
       <div className="flex flex-wrap gap-3">
         <Link
           className="border border-barber-brass bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream"
-          href="/rejestracja"
+          href="/rezerwacja"
         >
-          Załóż konto
+          Zarezerwuj termin
         </Link>
         <Link
           className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"

@@ -25,6 +25,9 @@ export default function RootLayout({
                 Patryk Barber
               </Link>
               <div className="flex items-center gap-4 text-sm text-barber-muted">
+                <Link className="transition hover:text-barber-cream" href="/rezerwacja">
+                  Rezerwacja
+                </Link>
                 <Link className="transition hover:text-barber-cream" href="/logowanie">
                   Logowanie
                 </Link>

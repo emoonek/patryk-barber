@@ -1,5 +1,7 @@
 import { logoutAction } from "@/modules/auth/auth.actions";
 import { requireAuth } from "@/modules/auth/auth.guards";
+import { AccountBookings } from "@/modules/booking/components/account-bookings";
+import { listCustomerBookings } from "@/modules/booking/booking.repository";
 
 export const metadata = {
   title: "Konto",
@@ -7,6 +9,10 @@ export const metadata = {
 
 export default async function AccountPage() {
   const user = await requireAuth();
+  const now = new Date();
+  const bookings = await listCustomerBookings(user.id);
+  const upcoming = bookings.filter((booking) => booking.status === "confirmed" && booking.startAt > now);
+  const history = bookings.filter((booking) => booking.status !== "confirmed" || booking.startAt <= now).reverse();
 
   return (
     <section className="mx-auto max-w-4xl px-6 py-16">
@@ -24,6 +30,7 @@ export default async function AccountPage() {
             : "oczekuje na weryfikację"}
         </p>
       </div>
+      <AccountBookings history={history} upcoming={upcoming} />
       <form action={logoutAction} className="mt-6">
         <button className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass">
           Wyloguj się
