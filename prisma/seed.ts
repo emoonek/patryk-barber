@@ -6,6 +6,10 @@ const prisma = new PrismaClient();
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL ?? "spontan2wz@gmail.com";
 const ADMIN_INITIAL_PASSWORD = process.env.ADMIN_INITIAL_PASSWORD;
 
+function passwordWithPepper(password: string) {
+  return `${password}${process.env.PASSWORD_PEPPER ?? ""}`;
+}
+
 const services = [
   {
     name: "Strzyżenie męskie",
@@ -57,7 +61,7 @@ async function main() {
     throw new Error("Missing ADMIN_INITIAL_PASSWORD in environment.");
   }
 
-  const passwordHash = await bcrypt.hash(ADMIN_INITIAL_PASSWORD, 12);
+  const passwordHash = await bcrypt.hash(passwordWithPepper(ADMIN_INITIAL_PASSWORD), 12);
 
   await prisma.user.upsert({
     where: { email: ADMIN_EMAIL },

@@ -1,4 +1,5 @@
 import { AuthShell } from "@/modules/auth/components/auth-shell";
+import { RegisterForm } from "@/modules/auth/components/register-form";
 
 export const metadata = {
   title: "Rejestracja",
@@ -9,7 +10,9 @@ export default function RegisterPage() {
     <AuthShell
       eyebrow="Nowe konto"
       title="Rejestracja"
-      description="Walidacje Zod są gotowe, ale zapis użytkownika i weryfikacja emaila nie są jeszcze podłączone."
-    />
+      description="Utwórz konto klienta. Link do weryfikacji emaila pojawi się na razie w konsoli dev serwera."
+    >
+      <RegisterForm />
+    </AuthShell>
   );
 }

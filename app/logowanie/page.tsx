@@ -1,4 +1,5 @@
 import { AuthShell } from "@/modules/auth/components/auth-shell";
+import { LoginForm } from "@/modules/auth/components/login-form";
 
 export const metadata = {
   title: "Logowanie",
@@ -9,7 +10,9 @@ export default function LoginPage() {
     <AuthShell
       eyebrow="Konto klienta"
       title="Logowanie"
-      description="To jest placeholder formularza. Pełna obsługa sesji i logowania pojawi się w następnym etapie."
-    />
+      description="Zaloguj się adresem email i hasłem użytym podczas rejestracji."
+    >
+      <LoginForm />
+    </AuthShell>
   );
 }

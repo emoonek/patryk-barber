@@ -1,6 +1,6 @@
 # Patryk Barber
 
-Aplikacja webowa dla barbera: publiczna strona premium, system rezerwacji, konta klientów i panel admina.
+Aplikacja webowa dla barbera: publiczna strona premium, konta klientów, panel admina i w kolejnych etapach system rezerwacji.
 
 ## Stack
 
@@ -10,6 +10,58 @@ Aplikacja webowa dla barbera: publiczna strona premium, system rezerwacji, konta
 - Prisma
 - Tailwind CSS
 - Zod
+- bcryptjs
+
+## Auth w ETAPIE 3
+
+Zaimplementowany jest podstawowy system auth bez rozbudowanego UI:
+
+- rejestracja klienta przez `/rejestracja`,
+- walidacja Zod: imię, nazwisko, email, hasło, opcjonalny telefon i akceptacja regulaminu,
+- hashowanie hasła przez `bcryptjs`,
+- zapis użytkownika z rolą `customer` w Prisma, czyli odpowiednikiem biznesowej roli `CUSTOMER`,
+- `emailVerifiedAt` zostaje `null` do czasu wejścia w link weryfikacyjny,
+- logowanie przez `/logowanie`,
+- podpisywana sesja w ciasteczku `patbarber_session`,
+- wylogowanie z poziomu `/konto`,
+- ochrona `/konto` przez `requireAuth`,
+- ochrona `/admin` przez `requireAdmin`,
+- weryfikacja emaila przez `/weryfikacja-email/[token]`,
+- reset hasła przez `/zapomnialem-hasla` i `/reset-hasla/[token]`.
+
+Wysyłka emaili nie jest jeszcze podłączona. Link weryfikacji emaila i link resetu hasła są w trybie dev wypisywane w konsoli procesu `npm run dev`.
+
+## Wymagane zmienne `.env`
+
+Minimalnie potrzebne są:
+
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
+APP_URL="http://localhost:3000"
+SESSION_SECRET="replace-with-at-least-32-random-characters"
+PASSWORD_PEPPER="replace-with-random-password-pepper"
+ADMIN_EMAIL="spontan2wz@gmail.com"
+ADMIN_INITIAL_PASSWORD="change-me-before-seed"
+```
+
+Zmienne SMTP i `MAIL_FROM` mogą zostać w `.env.example`, ale w ETAPIE 3 nie są jeszcze używane przez aplikację.
+
+## Lokalna baza danych
+
+Projekt używa PostgreSQL. Jeśli nie masz lokalnej bazy, najprościej uruchomić ją przez Docker:
+
+```bash
+docker run --name patbarber-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=patbarber -p 5432:5432 -d postgres:16
+```
+
+Jeśli kontener już istnieje:
+
+```bash
+docker start patbarber-postgres
+```
+
+Potem upewnij się, że `DATABASE_URL` i `DIRECT_URL` w `.env` wskazują na tę bazę.
 
 ## Uruchomienie lokalnie
 
@@ -25,14 +77,7 @@ npm install
 cp .env.example .env
 ```
 
-3. Uzupełnij `.env`, szczególnie:
-
-- `DATABASE_URL`
-- `DIRECT_URL`
-- `SESSION_SECRET`
-- `PASSWORD_PEPPER`
-- `ADMIN_INITIAL_PASSWORD`
-- dane SMTP
+3. Uzupełnij `.env`.
 
 4. Wygeneruj Prisma Client:
 
@@ -52,7 +97,7 @@ npm run prisma:validate
 npm run prisma:migrate
 ```
 
-7. Uruchom seed:
+7. Uruchom seed, który tworzy konto admina i podstawowe dane:
 
 ```bash
 npm run db:seed
@@ -66,8 +111,15 @@ npm run dev
 
 Aplikacja będzie dostępna pod adresem `http://localhost:3000`.
 
-## Obecny zakres
+## Przydatne komendy
 
-ETAP 2 zawiera fundament projektu: konfigurację Next.js, TypeScript, Tailwind, Prisma Client, podstawowe strony, placeholder modułu auth oraz walidacje Zod.
+```bash
+npm run typecheck
+npm run lint
+npm run build
+npm run prisma:studio
+```
 
-Pełne logowanie, rejestracja, booking engine i panel admina nie są jeszcze zaimplementowane.
+## ETAP 4
+
+Następny etap powinien objąć booking engine: usługi, dostępne terminy, tworzenie rezerwacji przez klienta, blokowanie zajętych slotów i podstawowe widoki rezerwacji w koncie klienta oraz panelu admina.
