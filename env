@@ -1,0 +1,24 @@
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
+
+APP_URL="http://localhost:3000"
+APP_ENV="development"
+
+SESSION_SECRET="replace-with-long-random-secret"
+PASSWORD_PEPPER="replace-with-long-random-pepper"
+
+ADMIN_EMAIL="spontan2wz@gmail.com"
+ADMIN_INITIAL_PASSWORD="change-me-before-seed"
+
+MAIL_FROM="Patryk Barber <spontan2wz@gmail.com>"
+SMTP_HOST="smtp.example.com"
+SMTP_PORT="587"
+SMTP_USER="smtp-user"
+SMTP_PASSWORD="smtp-password"
+
+NEXT_PUBLIC_BUSINESS_NAME="Patryk Barber"
+NEXT_PUBLIC_BUSINESS_ADDRESS="Ul. Zwycięstwa 28, 11-710 Piecki"
+NEXT_PUBLIC_BUSINESS_PHONE="+48 575 088 360"
+NEXT_PUBLIC_BUSINESS_EMAIL="spontan2wz@gmail.com"
+NEXT_PUBLIC_INSTAGRAM_HANDLE="@patrykbarber"
+NEXT_PUBLIC_FACEBOOK_NAME="Patryk Barber"
