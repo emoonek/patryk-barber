@@ -20,23 +20,23 @@ export type AvailableSlot = {
   endAt: Date;
 };
 
-function dateTimeFromParts(date: string, time: string) {
+export function dateTimeFromParts(date: string, time: string) {
   const [year, month, day] = date.split("-").map(Number);
   const [hours, minutes] = time.split(":").map(Number);
   return new Date(year, month - 1, day, hours, minutes, 0, 0);
 }
 
-function addMinutes(date: Date, minutes: number) {
+export function addMinutes(date: Date, minutes: number) {
   return new Date(date.getTime() + minutes * 60_000);
 }
 
-function dayRange(date: string) {
+export function dayRange(date: string) {
   const start = dateTimeFromParts(date, "00:00");
   const end = addMinutes(start, 24 * 60);
   return { start, end };
 }
 
-function rangesOverlap(firstStart: Date, firstEnd: Date, secondStart: Date, secondEnd: Date) {
+export function rangesOverlap(firstStart: Date, firstEnd: Date, secondStart: Date, secondEnd: Date) {
   return firstStart < secondEnd && firstEnd > secondStart;
 }
 
