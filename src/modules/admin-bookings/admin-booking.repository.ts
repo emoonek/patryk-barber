@@ -22,6 +22,7 @@ export function listAdminCustomers() {
       role: "customer",
       deletedAt: null,
       isActive: true,
+      isBlocked: false,
     },
     orderBy: [{ lastName: "asc" }, { firstName: "asc" }, { email: "asc" }],
     select: {

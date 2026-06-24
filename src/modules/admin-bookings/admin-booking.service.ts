@@ -97,6 +97,7 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
               role: "customer",
               deletedAt: null,
               isActive: true,
+              isBlocked: false,
             },
             select: { id: true },
           }),
@@ -104,7 +105,7 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
         ]);
 
         if (!customer) {
-          throw new Error("Wybrany klient nie istnieje albo jest nieaktywny.");
+          throw new Error("Wybrany klient nie istnieje, jest nieaktywny albo zablokowany.");
         }
 
         const endAt = addMinutes(startAt, service.durationMinutes);

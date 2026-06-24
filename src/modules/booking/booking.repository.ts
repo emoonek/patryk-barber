@@ -43,6 +43,8 @@ export function findBookableUser(userId: string, tx: Prisma.TransactionClient = 
     select: {
       id: true,
       emailVerifiedAt: true,
+      isBlocked: true,
+      blockedReason: true,
     },
   });
 }

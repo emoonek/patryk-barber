@@ -30,6 +30,11 @@ export default async function AccountPage() {
             : "oczekuje na weryfikację"}
         </p>
       </div>
+      {user.isBlocked ? (
+        <div className="mt-6 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
+          Twoje konto zostało zablokowane. Powód: {user.blockedReason ?? "nie podano powodu"}.
+        </div>
+      ) : null}
       <AccountBookings history={history} upcoming={upcoming} />
       <form action={logoutAction} className="mt-6">
         <button className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass">

@@ -24,6 +24,9 @@ export async function getCurrentUser() {
       phone: true,
       role: true,
       emailVerifiedAt: true,
+      isBlocked: true,
+      blockedReason: true,
+      blockedAt: true,
     },
   });
 }

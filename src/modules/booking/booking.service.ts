@@ -132,7 +132,15 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
         ]);
 
         if (!user) {
-          throw new Error("Konto jest nieaktywne albo zablokowane.");
+          throw new Error("Konto jest nieaktywne.");
+        }
+
+        if (user.isBlocked) {
+          throw new Error(
+            user.blockedReason
+              ? `Twoje konto jest zablokowane. Powod: ${user.blockedReason}`
+              : "Twoje konto jest zablokowane. Nie mozesz tworzyc nowych rezerwacji.",
+          );
         }
 
         if (!user.emailVerifiedAt) {

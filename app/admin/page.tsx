@@ -31,6 +31,12 @@ export default async function AdminPage() {
           </Link>
           <Link
             className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
+            href="/admin/klienci"
+          >
+            Klienci
+          </Link>
+          <Link
+            className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
             href="/admin/dostepnosc"
           >
             Dostepnosc

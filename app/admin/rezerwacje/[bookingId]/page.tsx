@@ -56,6 +56,9 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
           <p>
             <span className="text-barber-cream">Telefon:</span> {booking.customer.phone ?? "-"}
           </p>
+          <Link className="font-semibold text-barber-brass" href={`/admin/klienci/${booking.customer.id}`}>
+            Przejdz do klienta
+          </Link>
         </section>
 
         <section className="grid gap-4 border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">

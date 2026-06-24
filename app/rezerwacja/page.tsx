@@ -50,6 +50,12 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
         </div>
       ) : null}
 
+      {user.isBlocked ? (
+        <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
+          Twoje konto zostało zablokowane. Powód: {user.blockedReason ?? "nie podano powodu"}.
+        </div>
+      ) : null}
+
       <form className="mt-10 grid gap-5 border border-white/10 bg-black/20 p-6 md:grid-cols-[1fr_220px_auto]" method="get">
         <label className="grid gap-2 text-sm text-barber-muted">
           Usługa
@@ -92,7 +98,11 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
           </div>
         ) : null}
 
-        {user.emailVerifiedAt ? (
+        {user.isBlocked ? (
+          <div className="border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
+            Rezerwacja online jest niedostepna dla zablokowanego konta.
+          </div>
+        ) : user.emailVerifiedAt ? (
           <BookingForm date={selectedDate} serviceId={selectedServiceId ?? ""} slots={slots} />
         ) : (
           <div className="border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
