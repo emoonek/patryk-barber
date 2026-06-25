@@ -8,9 +8,8 @@ export const galleryCheckboxBooleanSchema = z.preprocess(
 const imageUrlSchema = z
   .string()
   .trim()
-  .min(1, "Podaj adres zdjecia.")
   .refine(
-    (value) => value.startsWith("/") || value.startsWith("https://") || value.startsWith("http://"),
+    (value) => !value || value.startsWith("/") || value.startsWith("https://") || value.startsWith("http://"),
     "Adres zdjecia musi zaczynac sie od /, https:// albo http://.",
   );
 

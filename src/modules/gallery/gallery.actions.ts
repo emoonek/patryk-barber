@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { requireAdmin } from "@/modules/auth/auth.guards";
+import { validateImageFile } from "@/lib/storage";
 import {
   createGalleryImageSchema,
   galleryCheckboxBooleanSchema,
@@ -26,6 +27,11 @@ function formValue(formData: FormData, key: string) {
   return typeof value === "string" ? value : "";
 }
 
+function formFile(formData: FormData, key: string) {
+  const value = formData.get(key);
+  return value instanceof File && value.size > 0 ? value : null;
+}
+
 function validationError(errors: Record<string, string[] | undefined>): GalleryActionState {
   return {
     ok: false,
@@ -48,6 +54,7 @@ export async function createGalleryImageAction(
   formData: FormData,
 ): Promise<GalleryActionState> {
   const admin = await requireAdmin();
+  const imageFile = formFile(formData, "imageFile");
   const parsed = createGalleryImageSchema.safeParse({
     imageUrl: formValue(formData, "imageUrl"),
     altText: formValue(formData, "altText"),
@@ -60,8 +67,24 @@ export async function createGalleryImageAction(
     return validationError(parsed.error.flatten().fieldErrors);
   }
 
+  if (!imageFile && !parsed.data.imageUrl) {
+    return validationError({
+      imageUrl: ["Podaj adres zdjecia albo wybierz plik do uploadu."],
+    });
+  }
+
+  if (imageFile) {
+    const fileError = validateImageFile(imageFile);
+
+    if (fileError) {
+      return validationError({
+        [fileError.field]: [fileError.message],
+      });
+    }
+  }
+
   try {
-    await createGalleryImage(parsed.data, admin.id);
+    await createGalleryImage({ ...parsed.data, imageFile }, admin.id);
   } catch (error) {
     return failure(error, "Nie udalo sie dodac zdjecia.");
   }
@@ -75,6 +98,7 @@ export async function updateGalleryImageAction(
   formData: FormData,
 ): Promise<GalleryActionState> {
   await requireAdmin();
+  const imageFile = formFile(formData, "imageFile");
   const parsed = updateGalleryImageSchema.safeParse({
     imageId: formValue(formData, "imageId"),
     imageUrl: formValue(formData, "imageUrl"),
@@ -88,8 +112,24 @@ export async function updateGalleryImageAction(
     return validationError(parsed.error.flatten().fieldErrors);
   }
 
+  if (!imageFile && !parsed.data.imageUrl) {
+    return validationError({
+      imageUrl: ["Podaj adres zdjecia albo wybierz plik do uploadu."],
+    });
+  }
+
+  if (imageFile) {
+    const fileError = validateImageFile(imageFile);
+
+    if (fileError) {
+      return validationError({
+        [fileError.field]: [fileError.message],
+      });
+    }
+  }
+
   try {
-    await updateGalleryImage(parsed.data);
+    await updateGalleryImage({ ...parsed.data, imageFile });
   } catch (error) {
     return failure(error, "Nie udalo sie zapisac zdjecia.");
   }
@@ -117,18 +157,27 @@ export async function toggleGalleryImageVisibleAction(formData: FormData) {
   revalidateGalleryPaths();
 }
 
-export async function deleteGalleryImageAction(formData: FormData) {
+export async function deleteGalleryImageAction(
+  _state: GalleryActionState,
+  formData: FormData,
+): Promise<GalleryActionState> {
   await requireAdmin();
   const parsed = galleryImageIdSchema.safeParse({
     imageId: formValue(formData, "imageId"),
   });
 
   if (!parsed.success) {
-    return;
+    return { ok: false, message: "Brakuje identyfikatora zdjecia." };
   }
 
-  await deleteGalleryImage(parsed.data.imageId);
+  try {
+    await deleteGalleryImage(parsed.data.imageId);
+  } catch (error) {
+    return failure(error, "Nie udalo sie usunac zdjecia.");
+  }
+
   revalidateGalleryPaths();
+  return { ok: true, message: "Zdjecie zostalo usuniete." };
 }
 
 function revalidateGalleryPaths() {

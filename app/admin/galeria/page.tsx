@@ -54,6 +54,7 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
             <tr className="border-b border-white/10">
               <th className="px-4 py-3 font-medium">Miniatura</th>
               <th className="px-4 py-3 font-medium">Image URL</th>
+              <th className="px-4 py-3 font-medium">Zrodlo</th>
               <th className="px-4 py-3 font-medium">Alt text</th>
               <th className="px-4 py-3 font-medium">Caption</th>
               <th className="px-4 py-3 font-medium">Kolejnosc</th>
@@ -74,6 +75,13 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
                 </td>
                 <td className="max-w-[260px] px-4 py-3 font-mono text-xs text-barber-cream">
                   {image.imageUrl}
+                </td>
+                <td className="px-4 py-3">
+                  {image.storageKey ? (
+                    <span className="border border-green-300/30 px-2 py-1 text-xs text-green-200">Storage</span>
+                  ) : (
+                    <span className="border border-white/10 px-2 py-1 text-xs text-barber-muted">Reczny URL</span>
+                  )}
                 </td>
                 <td className="max-w-[220px] px-4 py-3">{image.altText}</td>
                 <td className="max-w-[220px] px-4 py-3">{image.title ?? "-"}</td>
@@ -113,8 +121,8 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
       </div>
 
       <div className="mt-8 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
-        Na tym etapie dodawanie zdjec dziala przez imageUrl. Warstwa storage jest przygotowana tak, zeby
-        pozniej podmienic ja na Cloudinary albo S3 bez przepisywania formularzy admina.
+        Upload plikow korzysta z warstwy storage przygotowanej pod Cloudinary. W development nadal mozna
+        wpisac imageUrl recznie, np. do zdjec z katalogu public/galeria-testowa.
       </div>
     </section>
   );

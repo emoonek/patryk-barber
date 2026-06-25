@@ -140,6 +140,7 @@ model GalleryImage {
   altText      String
   imageUrl     String
   thumbnailUrl String?
+  storageKey   String?
   sortOrder    Int      @default(0)
   isPublished  Boolean  @default(true)
   uploadedById String?

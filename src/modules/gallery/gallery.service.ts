@@ -1,16 +1,31 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
-import { galleryStorage } from "./gallery-storage.service";
+import { deleteImage, uploadImage } from "@/lib/storage";
 import type { CreateGalleryImageInput, UpdateGalleryImageInput } from "./gallery.schemas";
 
-export async function createGalleryImage(input: CreateGalleryImageInput, uploadedById?: string) {
-  const storedImage = await galleryStorage.prepareImage({ imageUrl: input.imageUrl });
+type CreateGalleryImagePayload = CreateGalleryImageInput & {
+  imageFile: File | null;
+};
+
+type UpdateGalleryImagePayload = UpdateGalleryImageInput & {
+  imageFile: File | null;
+};
+
+export async function createGalleryImage(input: CreateGalleryImagePayload, uploadedById?: string) {
+  const storedImage = input.imageFile
+    ? await uploadImage(input.imageFile)
+    : {
+        imageUrl: input.imageUrl.trim(),
+        thumbnailUrl: null,
+        storageKey: null,
+      };
 
   try {
     await prisma.galleryImage.create({
       data: {
         imageUrl: storedImage.imageUrl,
         thumbnailUrl: storedImage.thumbnailUrl,
+        storageKey: storedImage.storageKey,
         altText: input.altText,
         title: input.caption,
         sortOrder: input.sortOrder,
@@ -23,8 +38,23 @@ export async function createGalleryImage(input: CreateGalleryImageInput, uploade
   }
 }
 
-export async function updateGalleryImage(input: UpdateGalleryImageInput) {
-  const storedImage = await galleryStorage.prepareImage({ imageUrl: input.imageUrl });
+export async function updateGalleryImage(input: UpdateGalleryImagePayload) {
+  const existingImage = await prisma.galleryImage.findUnique({
+    where: { id: input.imageId },
+    select: { storageKey: true },
+  });
+
+  if (!existingImage) {
+    throw new Error("Nie znaleziono zdjecia galerii.");
+  }
+
+  const storedImage = input.imageFile
+    ? await uploadImage(input.imageFile)
+    : {
+        imageUrl: input.imageUrl.trim(),
+        thumbnailUrl: null,
+        storageKey: null,
+      };
 
   try {
     await prisma.galleryImage.update({
@@ -32,13 +62,22 @@ export async function updateGalleryImage(input: UpdateGalleryImageInput) {
       data: {
         imageUrl: storedImage.imageUrl,
         thumbnailUrl: storedImage.thumbnailUrl,
+        storageKey: storedImage.storageKey,
         altText: input.altText,
         title: input.caption,
         sortOrder: input.sortOrder,
         isPublished: input.isVisible,
       },
     });
+
+    if (existingImage.storageKey && existingImage.storageKey !== storedImage.storageKey) {
+      await deleteImage(existingImage.storageKey).catch(() => undefined);
+    }
   } catch (error) {
+    if (input.imageFile && storedImage.storageKey) {
+      await deleteImage(storedImage.storageKey).catch(() => undefined);
+    }
+
     handleGalleryWriteError(error, "Nie udalo sie zapisac zdjecia.");
   }
 }
@@ -56,6 +95,19 @@ export async function setGalleryImageVisible(imageId: string, isVisible: boolean
 
 export async function deleteGalleryImage(imageId: string) {
   try {
+    const image = await prisma.galleryImage.findUnique({
+      where: { id: imageId },
+      select: { storageKey: true },
+    });
+
+    if (!image) {
+      throw new Error("Nie znaleziono zdjecia galerii.");
+    }
+
+    if (image.storageKey) {
+      await deleteImage(image.storageKey);
+    }
+
     await prisma.galleryImage.delete({
       where: { id: imageId },
     });

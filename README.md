@@ -47,6 +47,26 @@ ADMIN_INITIAL_PASSWORD="change-me-before-seed"
 
 Zmienne SMTP i `MAIL_FROM` mogą zostać w `.env.example`, ale w ETAPIE 3 nie są jeszcze używane przez aplikację.
 
+## Cloudinary i galeria
+
+Panel `/admin/galeria` obsługuje dwa sposoby dodawania zdjęć:
+
+- upload pliku JPG, PNG albo WebP do Cloudinary,
+- ręczne wpisanie `imageUrl` jako fallback developerski, np. `/galeria-testowa/nazwa-pliku.png`.
+
+Upload wymaga tych zmiennych w `.env`:
+
+```env
+CLOUDINARY_CLOUD_NAME=""
+CLOUDINARY_API_KEY=""
+CLOUDINARY_API_SECRET=""
+CLOUDINARY_FOLDER="patbarber/gallery"
+```
+
+Nie commituj prawdziwych sekretów Cloudinary. `CLOUDINARY_FOLDER` jest opcjonalny, ale pomaga trzymać zdjęcia galerii w jednym folderze. Po uploadzie aplikacja zapisuje publiczny URL w `imageUrl`, miniaturkę w `thumbnailUrl` i `public_id` Cloudinary w `storageKey`. Rekordy dodane ręcznie przez `imageUrl` nie muszą mieć `storageKey`; przy ich usuwaniu kasowany jest tylko rekord w bazie.
+
+Walidacja uploadu odbywa się po stronie serwera: dozwolone są `image/jpeg`, `image/png` i `image/webp`, a maksymalny rozmiar pliku to 5 MB. Jeśli konfiguracja Cloudinary nie jest uzupełniona, upload albo usunięcie zdjęcia ze storage zwróci czytelny błąd w panelu admina zamiast wyłożyć całą aplikację.
+
 ## Lokalna baza danych
 
 Projekt używa PostgreSQL. Jeśli nie masz lokalnej bazy, najprościej uruchomić ją przez Docker:

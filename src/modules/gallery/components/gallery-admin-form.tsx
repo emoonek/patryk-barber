@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import {
   createGalleryImageAction,
   updateGalleryImageAction,
@@ -25,21 +25,59 @@ const initialState: GalleryActionState = {};
 export function GalleryAdminForm({ mode, image }: GalleryAdminFormProps) {
   const action = mode === "create" ? createGalleryImageAction : updateGalleryImageAction;
   const [state, formAction, pending] = useActionState(action, initialState);
+  const [previewUrl, setPreviewUrl] = useState(image?.imageUrl ?? "");
   const title = mode === "create" ? "Dodaj zdjecie" : "Edytuj zdjecie";
 
+  useEffect(() => {
+    setPreviewUrl(image?.imageUrl ?? "");
+  }, [image?.imageUrl]);
+
   return (
-    <form action={formAction} className="grid gap-4 border border-white/10 bg-black/20 p-6">
+    <form action={formAction} className="grid gap-4 border border-white/10 bg-black/20 p-6" encType="multipart/form-data">
       {image ? <input name="imageId" type="hidden" value={image.id} /> : null}
       <h2 className="text-2xl font-semibold text-barber-cream">{title}</h2>
 
       <div className="grid gap-4 md:grid-cols-[2fr_1fr]">
         <label className="grid gap-2 text-sm text-barber-muted">
-          Image URL
+          Plik zdjecia
+          <input
+            accept="image/jpeg,image/png,image/webp"
+            className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream file:mr-4 file:border-0 file:bg-barber-brass file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+            name="imageFile"
+            onChange={(event) => {
+              const file = event.currentTarget.files?.[0];
+
+              if (file) {
+                setPreviewUrl(URL.createObjectURL(file));
+              }
+            }}
+            type="file"
+          />
+          {state.errors?.imageFile ? <span className="text-red-300">{state.errors.imageFile[0]}</span> : null}
+        </label>
+
+        <div className="grid gap-2 text-sm text-barber-muted">
+          Podglad
+          <div className="flex h-24 w-24 items-center justify-center border border-white/10 bg-[#120f0d]">
+            {previewUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img alt="Podglad zdjecia" className="h-full w-full object-cover" src={previewUrl} />
+            ) : (
+              <span className="px-3 text-center text-xs">Brak zdjecia</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-[2fr_1fr]">
+        <label className="grid gap-2 text-sm text-barber-muted">
+          Image URL fallback
           <input
             className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
             defaultValue={image?.imageUrl ?? ""}
             name="imageUrl"
             placeholder="/galeria-testowa/nazwa-pliku.png"
+            onChange={(event) => setPreviewUrl(event.currentTarget.value)}
           />
           {state.errors?.imageUrl ? <span className="text-red-300">{state.errors.imageUrl[0]}</span> : null}
         </label>
