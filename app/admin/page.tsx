@@ -47,6 +47,12 @@ export default async function AdminPage() {
           >
             Uslugi
           </Link>
+          <Link
+            className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
+            href="/admin/galeria"
+          >
+            Galeria
+          </Link>
         </div>
       </div>
 
