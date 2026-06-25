@@ -173,6 +173,9 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
           data: {
             customerId,
             serviceId: service.id,
+            serviceNameSnapshot: service.name,
+            servicePriceCentsSnapshot: service.priceCents,
+            serviceDurationMinutesSnapshot: service.durationMinutes,
             status: ACTIVE_BOOKING_STATUS,
             activeSlotKey: formatSlotKey(startAt),
             startAt,

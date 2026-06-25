@@ -116,12 +116,9 @@ export function listCustomerBookings(customerId: string) {
       status: true,
       startAt: true,
       endAt: true,
-      service: {
-        select: {
-          name: true,
-          priceCents: true,
-        },
-      },
+      serviceNameSnapshot: true,
+      servicePriceCentsSnapshot: true,
+      serviceDurationMinutesSnapshot: true,
     },
   });
 }

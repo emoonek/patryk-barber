@@ -168,10 +168,9 @@ type CustomerBooking = {
   status: Parameters<typeof bookingStatusLabel>[0];
   startAt: Date;
   endAt: Date;
-  service: {
-    name: string;
-    priceCents: number;
-  };
+  serviceNameSnapshot: string;
+  servicePriceCentsSnapshot: number;
+  serviceDurationMinutesSnapshot: number;
 };
 
 function BookingList({ bookings, emptyText }: { bookings: CustomerBooking[]; emptyText: string }) {
@@ -190,8 +189,10 @@ function BookingList({ bookings, emptyText }: { bookings: CustomerBooking[]; emp
           <p className="font-medium text-barber-cream">
             {formatDate(booking.startAt)}, {formatTime(booking.startAt)} - {formatTime(booking.endAt)}
           </p>
-          <p>{booking.service.name}</p>
-          <p>{formatMoney(booking.service.priceCents)}</p>
+          <p>{booking.serviceNameSnapshot}</p>
+          <p>
+            {formatMoney(booking.servicePriceCentsSnapshot)} / {booking.serviceDurationMinutesSnapshot} min
+          </p>
           <p>{bookingStatusLabel(booking.status)}</p>
         </Link>
       ))}

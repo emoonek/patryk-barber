@@ -6,10 +6,9 @@ type AccountBooking = {
   id: string;
   status: BookingStatus;
   startAt: Date;
-  service: {
-    name: string;
-    priceCents: number;
-  };
+  serviceNameSnapshot: string;
+  servicePriceCentsSnapshot: number;
+  serviceDurationMinutesSnapshot: number;
 };
 
 type AccountBookingsProps = {
@@ -33,12 +32,14 @@ function BookingRow({ booking, canCancel }: { booking: AccountBooking; canCancel
   return (
     <div className="grid gap-4 border border-white/10 bg-black/20 p-5 text-sm text-barber-muted md:grid-cols-[1.2fr_1fr_1fr_auto] md:items-center">
       <div>
-        <p className="font-medium text-barber-cream">{booking.service.name}</p>
+        <p className="font-medium text-barber-cream">{booking.serviceNameSnapshot}</p>
         <p>
           {formatDate(booking.startAt)}, {formatTime(booking.startAt)}
         </p>
       </div>
-      <p>{formatMoney(booking.service.priceCents)}</p>
+      <p>
+        {formatMoney(booking.servicePriceCentsSnapshot)} / {booking.serviceDurationMinutesSnapshot} min
+      </p>
       <p>{statusLabel(booking.status)}</p>
       {canCancel ? (
         <form action={cancelBookingAction}>

@@ -64,10 +64,13 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
         <section className="grid gap-4 border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
           <h2 className="text-2xl font-semibold text-barber-cream">Dane wizyty</h2>
           <p>
-            <span className="text-barber-cream">Usluga:</span> {booking.service.name}
+            <span className="text-barber-cream">Usluga:</span> {booking.serviceNameSnapshot}
           </p>
           <p>
-            <span className="text-barber-cream">Cena:</span> {formatMoney(booking.service.priceCents)}
+            <span className="text-barber-cream">Cena:</span> {formatMoney(booking.servicePriceCentsSnapshot)}
+          </p>
+          <p>
+            <span className="text-barber-cream">Czas uslugi:</span> {booking.serviceDurationMinutesSnapshot} min
           </p>
           <p>
             <span className="text-barber-cream">Termin:</span> {formatDate(booking.startAt)},{" "}

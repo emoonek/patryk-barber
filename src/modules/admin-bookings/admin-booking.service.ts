@@ -28,6 +28,8 @@ async function findServiceOrThrow(serviceId: string, tx: Prisma.TransactionClien
     },
     select: {
       id: true,
+      name: true,
+      priceCents: true,
       durationMinutes: true,
     },
   });
@@ -115,6 +117,9 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
           data: {
             customerId: customer.id,
             serviceId: service.id,
+            serviceNameSnapshot: service.name,
+            servicePriceCentsSnapshot: service.priceCents,
+            serviceDurationMinutesSnapshot: service.durationMinutes,
             status: BookingStatus.confirmed,
             activeSlotKey: formatSlotKey(startAt),
             startAt,
@@ -161,6 +166,7 @@ export async function adminUpdateBooking(adminUserId: string, input: AdminUpdate
         const service = await findServiceOrThrow(input.serviceId, tx);
         const endAt = addMinutes(startAt, service.durationMinutes);
         const remainsConfirmed = booking.status === BookingStatus.confirmed;
+        const serviceChanged = booking.serviceId !== service.id;
 
         if (remainsConfirmed) {
           await assertSlotIsFree(startAt, endAt, tx, booking.id);
@@ -170,6 +176,13 @@ export async function adminUpdateBooking(adminUserId: string, input: AdminUpdate
           where: { id: booking.id },
           data: {
             serviceId: service.id,
+            ...(serviceChanged
+              ? {
+                  serviceNameSnapshot: service.name,
+                  servicePriceCentsSnapshot: service.priceCents,
+                  serviceDurationMinutesSnapshot: service.durationMinutes,
+                }
+              : {}),
             startAt,
             endAt,
             activeSlotKey: remainsConfirmed ? formatSlotKey(startAt) : null,

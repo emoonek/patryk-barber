@@ -106,6 +106,9 @@ export function getAdminBookingDetails(bookingId: string) {
       activeSlotKey: true,
       startAt: true,
       endAt: true,
+      serviceNameSnapshot: true,
+      servicePriceCentsSnapshot: true,
+      serviceDurationMinutesSnapshot: true,
       customerMessage: true,
       adminNote: true,
       cancelledAt: true,
@@ -177,18 +180,15 @@ const adminBookingListSelect = {
   status: true,
   startAt: true,
   endAt: true,
+  serviceNameSnapshot: true,
+  servicePriceCentsSnapshot: true,
+  serviceDurationMinutesSnapshot: true,
   customer: {
     select: {
       firstName: true,
       lastName: true,
       email: true,
       phone: true,
-    },
-  },
-  service: {
-    select: {
-      name: true,
-      priceCents: true,
     },
   },
 } satisfies Prisma.BookingSelect;

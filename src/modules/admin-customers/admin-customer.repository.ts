@@ -79,12 +79,9 @@ export function getAdminCustomerDetails(clientId: string, now = new Date()) {
           status: true,
           startAt: true,
           endAt: true,
-          service: {
-            select: {
-              name: true,
-              priceCents: true,
-            },
-          },
+          serviceNameSnapshot: true,
+          servicePriceCentsSnapshot: true,
+          serviceDurationMinutesSnapshot: true,
         },
       },
       customerNotes: {

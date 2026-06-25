@@ -84,7 +84,7 @@ export default async function AdminPage() {
                   {formatDate(booking.startAt)}, {formatTime(booking.startAt)}
                 </p>
                 <p>
-                  {booking.service.name} - {formatMoney(booking.service.priceCents)}
+                  {booking.serviceNameSnapshot} - {formatMoney(booking.servicePriceCentsSnapshot)}
                 </p>
                 <span className="text-barber-brass">Szczegoly</span>
               </Link>
