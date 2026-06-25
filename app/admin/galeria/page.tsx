@@ -20,6 +20,7 @@ type AdminGalleryPageProps = {
 export default async function AdminGalleryPage({ searchParams }: AdminGalleryPageProps) {
   await requireAdmin();
   const params = (await searchParams) ?? {};
+  const showDeveloperOptions = process.env.APP_ENV === "development";
   const [images, editedImage] = await Promise.all([
     listAdminGalleryImages(),
     params.edit ? getAdminGalleryImage(params.edit) : Promise.resolve(null),
@@ -112,12 +113,12 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
 
       {editedImage ? (
         <div className="mt-8" id="edytuj-zdjecie">
-          <GalleryAdminForm image={editedImage} mode="edit" />
+          <GalleryAdminForm image={editedImage} mode="edit" showDeveloperOptions={showDeveloperOptions} />
         </div>
       ) : null}
 
       <div className="mt-8" id="dodaj-zdjecie">
-        <GalleryAdminForm mode="create" />
+        <GalleryAdminForm mode="create" showDeveloperOptions={showDeveloperOptions} />
       </div>
 
       <div className="mt-8 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">

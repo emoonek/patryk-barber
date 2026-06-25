@@ -129,7 +129,7 @@ function getCloudinaryConfig(): CloudinaryConfig {
   const apiSecret = process.env.CLOUDINARY_API_SECRET?.trim();
 
   if (!cloudName || !apiKey || !apiSecret) {
-    throw new Error("Brakuje konfiguracji Cloudinary. Uzupelnij zmienne CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY i CLOUDINARY_API_SECRET.");
+    throw new Error("Upload pliku wymaga konfiguracji Cloudinary. Na czas developmentu możesz użyć opcji developerskiej Image URL.");
   }
 
   return {
