@@ -102,11 +102,18 @@ export async function forgotPasswordAction(
     return validationError(parsed.error.flatten().fieldErrors);
   }
 
-  await requestPasswordReset(parsed.data);
+  try {
+    await requestPasswordReset(parsed.data);
+  } catch (error) {
+    return {
+      ok: false,
+      message: error instanceof Error ? error.message : "Nie udalo sie wyslac linku resetu hasla.",
+    };
+  }
 
   return {
     ok: true,
-    message: "Jeśli konto istnieje, link resetu został zapisany w konsoli dev serwera.",
+    message: "Jesli konto istnieje, wyslalismy link resetu hasla.",
   };
 }
 

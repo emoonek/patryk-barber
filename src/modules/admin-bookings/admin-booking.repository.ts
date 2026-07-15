@@ -1,6 +1,6 @@
 import { BookingStatus, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
-import { dayRange } from "@/modules/booking/booking.service";
+import { dayRange } from "@/modules/booking/booking.format";
 import type { AdminBookingFilters } from "./admin-booking.schemas";
 
 export function listAdminServices() {

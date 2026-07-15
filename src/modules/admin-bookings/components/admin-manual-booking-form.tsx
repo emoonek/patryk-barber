@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useMemo, useState } from "react";
-import { DEFAULT_SLOT_TIMES, formatMoney, todayInputValue } from "@/modules/booking/booking.service";
+import { DEFAULT_SLOT_TIMES, formatMoney, todayInputValue } from "@/modules/booking/booking.format";
 import { adminCreateBookingAction, type AdminActionState } from "../admin-booking.actions";
 import { customerName } from "../admin-booking.format";
 import { AdminActionMessage } from "./admin-action-message";

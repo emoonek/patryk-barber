@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getAdminDashboardStats } from "@/modules/admin-bookings/admin-booking.repository";
 import { customerName } from "@/modules/admin-bookings/admin-booking.format";
 import { requireAdmin } from "@/modules/auth/auth.guards";
-import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.service";
+import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.format";
 
 export const metadata = {
   title: "Admin",

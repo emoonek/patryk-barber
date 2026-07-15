@@ -1,5 +1,23 @@
 import { BookingActorType, BookingStatus, Prisma } from "@prisma/client";
+import {
+  sendAdminBookingCancellationNotification,
+  sendAdminNewBookingNotification,
+  sendBookingCancellationEmail,
+  sendBookingConfirmationEmail,
+} from "@/lib/email";
 import { prisma } from "@/lib/db/prisma";
+import {
+  addMinutes,
+  dateTimeFromParts,
+  dayRange,
+  DEFAULT_SLOT_TIMES,
+  formatDate,
+  formatMoney,
+  formatSlotKey,
+  formatTime,
+  rangesOverlap,
+  type AvailableSlot,
+} from "./booking.format";
 import type { CancelBookingInput, CreateBookingInput } from "./booking.schemas";
 import {
   ACTIVE_BOOKING_STATUS,
@@ -10,67 +28,19 @@ import {
   listBlockedAvailabilityExceptions,
 } from "./booking.repository";
 
-export const DEFAULT_SLOT_TIMES = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"] as const;
-
 const MAX_ACTIVE_FUTURE_BOOKINGS = 3;
 
-export type AvailableSlot = {
-  time: (typeof DEFAULT_SLOT_TIMES)[number];
+type BookingEmailData = {
+  customer: {
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+  };
+  serviceNameSnapshot: string;
+  servicePriceCentsSnapshot: number;
+  serviceDurationMinutesSnapshot: number;
   startAt: Date;
-  endAt: Date;
 };
-
-export function dateTimeFromParts(date: string, time: string) {
-  const [year, month, day] = date.split("-").map(Number);
-  const [hours, minutes] = time.split(":").map(Number);
-  return new Date(year, month - 1, day, hours, minutes, 0, 0);
-}
-
-export function addMinutes(date: Date, minutes: number) {
-  return new Date(date.getTime() + minutes * 60_000);
-}
-
-export function dayRange(date: string) {
-  const start = dateTimeFromParts(date, "00:00");
-  const end = addMinutes(start, 24 * 60);
-  return { start, end };
-}
-
-export function rangesOverlap(firstStart: Date, firstEnd: Date, secondStart: Date, secondEnd: Date) {
-  return firstStart < secondEnd && firstEnd > secondStart;
-}
-
-export function formatSlotKey(startAt: Date) {
-  return `slot:${startAt.toISOString()}`;
-}
-
-export function formatMoney(priceCents: number) {
-  return new Intl.NumberFormat("pl-PL", {
-    style: "currency",
-    currency: "PLN",
-  }).format(priceCents / 100);
-}
-
-export function formatDate(date: Date) {
-  return new Intl.DateTimeFormat("pl-PL", {
-    dateStyle: "medium",
-  }).format(date);
-}
-
-export function formatTime(date: Date) {
-  return new Intl.DateTimeFormat("pl-PL", {
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
-
-export function todayInputValue() {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
 
 export async function getAvailableSlots(serviceId: string, date: string): Promise<AvailableSlot[]> {
   const service = await findActiveService(serviceId);
@@ -118,7 +88,7 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
   }
 
   try {
-    await prisma.$transaction(
+    const booking = await prisma.$transaction(
       async (tx) => {
         await tx.user.update({
           where: { id: customerId },
@@ -169,7 +139,7 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
           throw new Error("Ten termin jest zablokowany.");
         }
 
-        await tx.booking.create({
+        return tx.booking.create({
           data: {
             customerId,
             serviceId: service.id,
@@ -190,12 +160,18 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
               },
             },
           },
+          select: bookingEmailSelect,
         });
       },
       {
         isolationLevel: Prisma.TransactionIsolationLevel.Serializable,
       },
     );
+
+    await logBookingEmailFailures("utworzeniu rezerwacji", [
+      sendBookingConfirmationEmail(toBookingEmailContext(booking)),
+      sendAdminNewBookingNotification(toBookingEmailContext(booking)),
+    ]);
   } catch (error) {
     if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
       throw new Error("Ten termin jest już zajęty.");
@@ -208,7 +184,7 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
 export async function cancelCustomerBooking(customerId: string, input: CancelBookingInput) {
   const now = new Date();
 
-  await prisma.$transaction(async (tx) => {
+  const booking = await prisma.$transaction(async (tx) => {
     const booking = await tx.booking.findFirst({
       where: {
         id: input.bookingId,
@@ -218,6 +194,17 @@ export async function cancelCustomerBooking(customerId: string, input: CancelBoo
         id: true,
         status: true,
         startAt: true,
+        endAt: true,
+        serviceNameSnapshot: true,
+        servicePriceCentsSnapshot: true,
+        serviceDurationMinutesSnapshot: true,
+        customer: {
+          select: {
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
       },
     });
 
@@ -233,7 +220,7 @@ export async function cancelCustomerBooking(customerId: string, input: CancelBoo
       throw new Error("Możesz anulować tylko przyszłą rezerwację.");
     }
 
-    await tx.booking.update({
+    return tx.booking.update({
       where: { id: booking.id },
       data: {
         status: BookingStatus.cancelled_by_client,
@@ -249,6 +236,52 @@ export async function cancelCustomerBooking(customerId: string, input: CancelBoo
           },
         },
       },
+      select: bookingEmailSelect,
     });
   });
+
+  await logBookingEmailFailures("anulowaniu rezerwacji przez klienta", [
+    sendBookingCancellationEmail(toBookingEmailContext(booking)),
+    sendAdminBookingCancellationNotification(toBookingEmailContext(booking)),
+  ]);
 }
+
+function customerFullName(customer: BookingEmailData["customer"]) {
+  return `${customer.firstName ?? ""} ${customer.lastName ?? ""}`.trim() || customer.email;
+}
+
+function toBookingEmailContext(booking: BookingEmailData) {
+  return {
+    customerEmail: booking.customer.email,
+    customerName: customerFullName(booking.customer),
+    serviceName: booking.serviceNameSnapshot,
+    servicePrice: formatMoney(booking.servicePriceCentsSnapshot),
+    serviceDurationMinutes: booking.serviceDurationMinutesSnapshot,
+    date: formatDate(booking.startAt),
+    time: formatTime(booking.startAt),
+  };
+}
+
+async function logBookingEmailFailures(context: string, emailPromises: Promise<unknown>[]) {
+  const results = await Promise.allSettled(emailPromises);
+
+  results.forEach((result) => {
+    if (result.status === "rejected") {
+      console.error(`[EMAIL] Blad wysylki po ${context}.`, result.reason);
+    }
+  });
+}
+
+const bookingEmailSelect = {
+  customer: {
+    select: {
+      email: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
+  serviceNameSnapshot: true,
+  servicePriceCentsSnapshot: true,
+  serviceDurationMinutesSnapshot: true,
+  startAt: true,
+} satisfies Prisma.BookingSelect;

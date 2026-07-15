@@ -29,7 +29,7 @@ Zaimplementowany jest podstawowy system auth bez rozbudowanego UI:
 - weryfikacja emaila przez `/weryfikacja-email/[token]`,
 - reset hasła przez `/zapomnialem-hasla` i `/reset-hasla/[token]`.
 
-Wysyłka emaili nie jest jeszcze podłączona. Link weryfikacji emaila i link resetu hasła są w trybie dev wypisywane w konsoli procesu `npm run dev`.
+Wysyłka emaili transakcyjnych jest podłączona przez centralny email service. W development, jeśli SMTP nie jest skonfigurowane, pełna treść maila jest wypisywana w konsoli procesu `npm run dev`.
 
 ## Wymagane zmienne `.env`
 
@@ -43,9 +43,35 @@ SESSION_SECRET="replace-with-at-least-32-random-characters"
 PASSWORD_PEPPER="replace-with-random-password-pepper"
 ADMIN_EMAIL="spontan2wz@gmail.com"
 ADMIN_INITIAL_PASSWORD="change-me-before-seed"
+MAIL_FROM="Patryk Barber <spontan2wz@gmail.com>"
+SMTP_HOST=""
+SMTP_PORT="587"
+SMTP_USER=""
+SMTP_PASSWORD=""
 ```
 
-Zmienne SMTP i `MAIL_FROM` mogą zostać w `.env.example`, ale w ETAPIE 3 nie są jeszcze używane przez aplikację.
+## Email transakcyjny
+
+Aplikacja wysyła maile dla:
+
+- weryfikacji adresu email,
+- resetu hasła,
+- potwierdzenia rezerwacji klienta,
+- anulowania rezerwacji,
+- powiadomień admina o nowej albo anulowanej rezerwacji,
+- wiadomości admina do klienta z poziomu szczegółów rezerwacji.
+
+Konfiguracja SMTP:
+
+```env
+MAIL_FROM="Patryk Barber <spontan2wz@gmail.com>"
+SMTP_HOST=""
+SMTP_PORT="587"
+SMTP_USER=""
+SMTP_PASSWORD=""
+```
+
+W development puste `SMTP_HOST`, `SMTP_USER` albo `SMTP_PASSWORD` włącza bezpieczny fallback: mail jest logowany w konsoli i nie wychodzi na zewnątrz. W production brak pełnej konfiguracji SMTP jest błędem konfiguracyjnym. Błędy SMTP są logowane po stronie serwera; użytkownik nie dostaje technicznych szczegółów.
 
 ## Cloudinary i galeria
 
@@ -140,6 +166,6 @@ npm run build
 npm run prisma:studio
 ```
 
-## ETAP 4
+## ETAP 12
 
-Następny etap powinien objąć booking engine: usługi, dostępne terminy, tworzenie rezerwacji przez klienta, blokowanie zajętych slotów i podstawowe widoki rezerwacji w koncie klienta oraz panelu admina.
+Następny etap powinien objąć płatności albo finalne dopracowanie przepływów operacyjnych przed płatnościami: politykę zadatków, status płatności, maile płatnościowe i decyzję o operatorze płatności.

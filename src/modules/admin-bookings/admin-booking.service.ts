@@ -1,14 +1,19 @@
 import { AvailabilityExceptionType, BookingActorType, BookingStatus, Prisma } from "@prisma/client";
+import { sendAdminMessageToCustomer, sendBookingCancellationEmail } from "@/lib/email";
 import { prisma } from "@/lib/db/prisma";
 import {
   addMinutes,
   dateTimeFromParts,
   dayRange,
+  formatDate,
+  formatMoney,
   formatSlotKey,
-} from "@/modules/booking/booking.service";
+  formatTime,
+} from "@/modules/booking/booking.format";
 import type {
   AdminCancelBookingInput,
   AdminCreateBookingInput,
+  AdminMessageToCustomerInput,
   AdminStatusChangeInput,
   AdminUpdateBookingInput,
   BlockFullDayInput,
@@ -207,11 +212,18 @@ export async function adminUpdateBooking(adminUserId: string, input: AdminUpdate
 
 export async function adminCancelBooking(adminUserId: string, input: AdminCancelBookingInput) {
   const reason = normalizeOptionalText(input.cancelReason) ?? "Rezerwacja anulowana przez admina.";
-  await adminChangeBookingStatus(adminUserId, {
+  const booking = await adminChangeBookingStatus(adminUserId, {
     bookingId: input.bookingId,
     status: BookingStatus.cancelled_by_admin,
     reason,
   });
+
+  await logAdminBookingEmailFailures("anulowaniu rezerwacji przez admina", [
+    sendBookingCancellationEmail({
+      ...toAdminBookingEmailContext(booking),
+      cancelReason: normalizeOptionalText(input.cancelReason),
+    }),
+  ]);
 }
 
 export async function adminMarkBookingStatus(adminUserId: string, input: AdminStatusChangeInput) {
@@ -222,13 +234,30 @@ export async function adminMarkBookingStatus(adminUserId: string, input: AdminSt
   });
 }
 
+export async function adminSendMessageToCustomer(_adminUserId: string, input: AdminMessageToCustomerInput) {
+  const booking = await prisma.booking.findUnique({
+    where: { id: input.bookingId },
+    select: adminBookingEmailSelect,
+  });
+
+  if (!booking) {
+    throw new Error("Nie znaleziono rezerwacji.");
+  }
+
+  await sendAdminMessageToCustomer({
+    ...toAdminBookingEmailContext(booking),
+    subject: input.subject,
+    message: input.message,
+  });
+}
+
 async function adminChangeBookingStatus(
   adminUserId: string,
   input: { bookingId: string; status: BookingStatus; reason: string },
 ) {
   const now = new Date();
 
-  await prisma.$transaction(async (tx) => {
+  return prisma.$transaction(async (tx) => {
     const booking = await tx.booking.findUnique({
       where: { id: input.bookingId },
       select: {
@@ -249,7 +278,7 @@ async function adminChangeBookingStatus(
       throw new Error("Tylko potwierdzona rezerwacja moze zmienic status przez akcje admina.");
     }
 
-    await tx.booking.update({
+    return tx.booking.update({
       where: { id: booking.id },
       data: {
         status: input.status,
@@ -267,6 +296,7 @@ async function adminChangeBookingStatus(
           },
         },
       },
+      select: adminBookingEmailSelect,
     });
   });
 }
@@ -325,3 +355,55 @@ function handleUniqueSlotError(error: unknown): never {
 
   throw error;
 }
+
+function customerFullName(customer: { email: string; firstName: string | null; lastName: string | null }) {
+  return `${customer.firstName ?? ""} ${customer.lastName ?? ""}`.trim() || customer.email;
+}
+
+function toAdminBookingEmailContext(booking: AdminBookingEmailData) {
+  return {
+    customerEmail: booking.customer.email,
+    customerName: customerFullName(booking.customer),
+    serviceName: booking.serviceNameSnapshot,
+    servicePrice: formatMoney(booking.servicePriceCentsSnapshot),
+    serviceDurationMinutes: booking.serviceDurationMinutesSnapshot,
+    date: formatDate(booking.startAt),
+    time: formatTime(booking.startAt),
+  };
+}
+
+async function logAdminBookingEmailFailures(context: string, emailPromises: Promise<unknown>[]) {
+  const results = await Promise.allSettled(emailPromises);
+
+  results.forEach((result) => {
+    if (result.status === "rejected") {
+      console.error(`[EMAIL] Blad wysylki po ${context}.`, result.reason);
+    }
+  });
+}
+
+const adminBookingEmailSelect = {
+  customer: {
+    select: {
+      email: true,
+      firstName: true,
+      lastName: true,
+    },
+  },
+  serviceNameSnapshot: true,
+  servicePriceCentsSnapshot: true,
+  serviceDurationMinutesSnapshot: true,
+  startAt: true,
+} satisfies Prisma.BookingSelect;
+
+type AdminBookingEmailData = {
+  customer: {
+    email: string;
+    firstName: string | null;
+    lastName: string | null;
+  };
+  serviceNameSnapshot: string;
+  servicePriceCentsSnapshot: number;
+  serviceDurationMinutesSnapshot: number;
+  startAt: Date;
+};

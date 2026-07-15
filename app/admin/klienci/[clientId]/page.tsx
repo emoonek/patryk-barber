@@ -13,7 +13,7 @@ import {
 } from "@/modules/admin-customers/admin-customer.format";
 import { getAdminCustomerDetails } from "@/modules/admin-customers/admin-customer.repository";
 import { requireAdmin } from "@/modules/auth/auth.guards";
-import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.service";
+import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.format";
 
 export const metadata = {
   title: "Szczegoly klienta",

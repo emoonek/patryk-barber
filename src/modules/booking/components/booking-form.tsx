@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import { createBookingAction, type BookingActionState } from "../booking.actions";
-import type { AvailableSlot } from "../booking.service";
+import type { AvailableSlot } from "../booking.format";
 
 type BookingFormProps = {
   serviceId: string;

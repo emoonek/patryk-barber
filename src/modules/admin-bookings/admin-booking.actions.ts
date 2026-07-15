@@ -6,6 +6,7 @@ import {
   adminCancelBooking,
   adminCreateBooking,
   adminMarkBookingStatus,
+  adminSendMessageToCustomer,
   adminUpdateBooking,
   blockFullDay,
   blockSingleSlot,
@@ -14,6 +15,7 @@ import {
 import {
   adminCancelBookingSchema,
   adminCreateBookingSchema,
+  adminMessageToCustomerSchema,
   adminStatusChangeSchema,
   adminUpdateBookingSchema,
   availabilityExceptionIdSchema,
@@ -149,6 +151,31 @@ export async function adminStatusChangeAction(
 
   revalidateAdminBookingPaths(parsed.data.bookingId);
   return { ok: true, message: "Status rezerwacji zostal zmieniony." };
+}
+
+export async function adminMessageToCustomerAction(
+  _state: AdminActionState,
+  formData: FormData,
+): Promise<AdminActionState> {
+  const admin = await requireAdmin();
+  const parsed = adminMessageToCustomerSchema.safeParse({
+    bookingId: formValue(formData, "bookingId"),
+    subject: formValue(formData, "subject"),
+    message: formValue(formData, "message"),
+  });
+
+  if (!parsed.success) {
+    return validationError(parsed.error.flatten().fieldErrors);
+  }
+
+  try {
+    await adminSendMessageToCustomer(admin.id, parsed.data);
+  } catch (error) {
+    return failure(error, "Nie udalo sie wyslac wiadomosci do klienta.");
+  }
+
+  revalidateAdminBookingPaths(parsed.data.bookingId);
+  return { ok: true, message: "Wiadomosc zostala wyslana do klienta." };
 }
 
 export async function blockFullDayAction(_state: AdminActionState, formData: FormData): Promise<AdminActionState> {

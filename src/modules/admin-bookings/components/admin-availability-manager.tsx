@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { DEFAULT_SLOT_TIMES, formatDate, formatTime, todayInputValue } from "@/modules/booking/booking.service";
+import { DEFAULT_SLOT_TIMES, formatDate, formatTime, todayInputValue } from "@/modules/booking/booking.format";
 import {
   blockFullDayAction,
   blockSingleSlotAction,

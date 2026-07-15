@@ -7,7 +7,7 @@ import {
 } from "@/modules/admin-customers/admin-customer.format";
 import { listAdminCustomersWithStats } from "@/modules/admin-customers/admin-customer.repository";
 import { requireAdmin } from "@/modules/auth/auth.guards";
-import { formatDate } from "@/modules/booking/booking.service";
+import { formatDate } from "@/modules/booking/booking.format";
 
 export const metadata = {
   title: "Klienci admin",

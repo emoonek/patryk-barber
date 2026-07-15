@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { requireAuth } from "@/modules/auth/auth.guards";
 import { BookingForm } from "@/modules/booking/components/booking-form";
+import { formatMoney, todayInputValue } from "@/modules/booking/booking.format";
 import { listActiveServices } from "@/modules/booking/booking.repository";
-import { formatMoney, getAvailableSlots, todayInputValue } from "@/modules/booking/booking.service";
+import { getAvailableSlots } from "@/modules/booking/booking.service";
 
 export const metadata = {
   title: "Rezerwacja",

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { DEFAULT_SLOT_TIMES, formatMoney } from "@/modules/booking/booking.service";
+import { DEFAULT_SLOT_TIMES, formatMoney } from "@/modules/booking/booking.format";
 import { adminUpdateBookingAction, type AdminActionState } from "../admin-booking.actions";
 import { inputDateValue, inputTimeValue } from "../admin-booking.format";
 import { AdminActionMessage } from "./admin-action-message";

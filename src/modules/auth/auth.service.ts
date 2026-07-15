@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import { UserRole } from "@prisma/client";
+import { sendPasswordResetEmail, sendVerificationEmail } from "@/lib/email";
 import { prisma } from "@/lib/db/prisma";
 import type { ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./auth.schemas";
 import { createSession, destroySession } from "./session";
@@ -49,7 +50,10 @@ export async function registerUser(input: RegisterInput) {
     },
   });
 
-  console.info(`[DEV] Link weryfikacji email dla ${user.email}: ${appUrl()}/weryfikacja-email/${token}`);
+  await sendVerificationEmail({
+    to: user.email,
+    verificationUrl: `${appUrl()}/weryfikacja-email/${token}`,
+  });
   await createSession(user);
 
   return user;
@@ -145,7 +149,10 @@ export async function requestPasswordReset(input: ForgotPasswordInput) {
     },
   });
 
-  console.info(`[DEV] Link resetu hasła dla ${user.email}: ${appUrl()}/reset-hasla/${token}`);
+  await sendPasswordResetEmail({
+    to: user.email,
+    resetUrl: `${appUrl()}/reset-hasla/${token}`,
+  });
 }
 
 export async function resetPassword(input: ResetPasswordInput) {

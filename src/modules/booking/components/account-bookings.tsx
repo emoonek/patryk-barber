@@ -1,6 +1,6 @@
 import { BookingStatus } from "@prisma/client";
 import { cancelBookingAction } from "../booking.actions";
-import { formatDate, formatMoney, formatTime } from "../booking.service";
+import { formatDate, formatMoney, formatTime } from "../booking.format";
 
 type AccountBooking = {
   id: string;

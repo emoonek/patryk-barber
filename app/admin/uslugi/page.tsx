@@ -3,7 +3,7 @@ import { AdminServiceForm } from "@/modules/admin-services/components/admin-serv
 import { AdminServiceToggleForm } from "@/modules/admin-services/components/admin-service-toggle-form";
 import { getAdminService, listAdminServices } from "@/modules/admin-services/admin-service.repository";
 import { requireAdmin } from "@/modules/auth/auth.guards";
-import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.service";
+import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.format";
 
 export const metadata = {
   title: "Uslugi admin",

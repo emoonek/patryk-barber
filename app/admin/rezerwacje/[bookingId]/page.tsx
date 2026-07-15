@@ -2,13 +2,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { AdminBookingEditForm } from "@/modules/admin-bookings/components/admin-booking-edit-form";
 import { AdminBookingStatusActions } from "@/modules/admin-bookings/components/admin-booking-status-actions";
+import { AdminMessageToCustomerForm } from "@/modules/admin-bookings/components/admin-message-to-customer-form";
 import { actorTypeLabel, adminStatusLabel, customerName } from "@/modules/admin-bookings/admin-booking.format";
 import {
   getAdminBookingDetails,
   listAdminServices,
 } from "@/modules/admin-bookings/admin-booking.repository";
 import { requireAdmin } from "@/modules/auth/auth.guards";
-import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.service";
+import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.format";
 
 export const metadata = {
   title: "Szczegoly rezerwacji",
@@ -103,6 +104,7 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
       <div className="mt-8 grid gap-6">
         <AdminBookingEditForm booking={booking} services={services} />
         <AdminBookingStatusActions bookingId={booking.id} currentStatus={booking.status} />
+        <AdminMessageToCustomerForm bookingId={booking.id} />
       </div>
 
       <section className="mt-8">
