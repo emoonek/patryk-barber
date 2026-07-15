@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminNav } from "@/modules/admin/components/admin-nav";
 import { AdminServiceForm } from "@/modules/admin-services/components/admin-service-form";
 import { AdminServiceToggleForm } from "@/modules/admin-services/components/admin-service-toggle-form";
 import { getAdminService, listAdminServices } from "@/modules/admin-services/admin-service.repository";
@@ -6,7 +7,7 @@ import { requireAdmin } from "@/modules/auth/auth.guards";
 import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.format";
 
 export const metadata = {
-  title: "Uslugi admin",
+  title: "Usługi admin",
 };
 
 type AdminServicesPageProps = {
@@ -28,20 +29,15 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="mb-3 text-sm uppercase tracking-[0.24em] text-barber-brass">Admin</p>
-          <h1 className="text-4xl font-semibold text-barber-cream">Uslugi</h1>
+          <h1 className="text-4xl font-semibold text-barber-cream">Usługi</h1>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
-            href="/admin"
-          >
-            Dashboard
-          </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <AdminNav />
           <Link
             className="bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream"
             href="#dodaj-usluge"
           >
-            Dodaj usluge
+            Dodaj usługę
           </Link>
         </div>
       </div>
@@ -54,7 +50,7 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
               <th className="px-4 py-3 font-medium">Cena</th>
               <th className="px-4 py-3 font-medium">Czas</th>
               <th className="px-4 py-3 font-medium">Status</th>
-              <th className="px-4 py-3 font-medium">Kolejnosc</th>
+              <th className="px-4 py-3 font-medium">Kolejność</th>
               <th className="px-4 py-3 font-medium">Rezerwacje</th>
               <th className="px-4 py-3 font-medium">Utworzono</th>
               <th className="px-4 py-3 font-medium">Aktualizacja</th>
@@ -87,13 +83,15 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
           </tbody>
         </table>
         {services.length === 0 ? (
-          <p className="p-5 text-sm text-barber-muted">Nie dodano jeszcze zadnych uslug.</p>
+          <p className="p-5 text-sm text-barber-muted">
+            Brak usług. Dodaj pierwszą usługę, aby klienci mogli rozpocząć rezerwację.
+          </p>
         ) : null}
       </div>
 
       {params.edit && !editedService ? (
         <p className="mt-6 border border-red-300/30 bg-red-950/20 p-5 text-sm text-red-100">
-          Nie znaleziono uslugi do edycji.
+          Nie znaleziono usługi do edycji.
         </p>
       ) : null}
 
@@ -108,8 +106,8 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
       </div>
 
       <div className="mt-8 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
-        Rezerwacje przechowuja obecnie tylko serviceId. Zmiana nazwy, ceny lub czasu uslugi wplynie na sposob
-        wyswietlania historycznych rezerwacji, bo dane sa pobierane z aktualnej uslugi.
+        Rezerwacje zapisują nazwę, cenę i czas usługi jako snapshot w momencie rezerwacji, więc zmiany w usługach
+        nie nadpiszą historycznych danych wizyt.
       </div>
     </section>
   );

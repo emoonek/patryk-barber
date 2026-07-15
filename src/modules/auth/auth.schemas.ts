@@ -16,7 +16,7 @@ export const registerSchema = z
     lastName: nameSchema,
     phone: z.string().trim().max(30, "Numer telefonu jest za długi.").optional().or(z.literal("")),
     termsAccepted: z.literal("on", {
-      errorMap: () => ({ message: "Musisz zaakceptować regulamin." }),
+      errorMap: () => ({ message: "Musisz zaakceptować regulamin rezerwacji i politykę prywatności." }),
     }),
   })
   .refine((data) => data.password === data.confirmPassword, {

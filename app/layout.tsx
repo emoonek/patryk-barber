@@ -24,18 +24,21 @@ export default function RootLayout({
               <Link className="text-lg font-semibold tracking-wide text-barber-cream" href="/">
                 Patryk Barber
               </Link>
-              <div className="flex items-center gap-4 text-sm text-barber-muted">
+              <div className="flex flex-wrap items-center justify-end gap-4 text-sm text-barber-muted">
+                <Link className="transition hover:text-barber-cream" href="/">
+                  Strona główna
+                </Link>
                 <Link className="transition hover:text-barber-cream" href="/galeria">
                   Galeria
                 </Link>
                 <Link className="transition hover:text-barber-cream" href="/rezerwacja">
                   Rezerwacja
                 </Link>
-                <Link className="transition hover:text-barber-cream" href="/logowanie">
-                  Logowanie
+                <Link className="transition hover:text-barber-cream" href="/kontakt">
+                  Kontakt
                 </Link>
-                <Link className="transition hover:text-barber-cream" href="/rejestracja">
-                  Rejestracja
+                <Link className="transition hover:text-barber-cream" href="/regulamin-rezerwacji">
+                  Regulamin
                 </Link>
                 <Link className="transition hover:text-barber-cream" href="/konto">
                   Konto

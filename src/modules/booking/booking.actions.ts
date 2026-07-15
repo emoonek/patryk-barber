@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { assertRateLimit, RateLimitError, requestRateLimitKey } from "@/lib/security/rate-limit";
 import { requireAuth } from "@/modules/auth/auth.guards";
 import { cancelBookingSchema, createBookingSchema } from "./booking.schemas";
 import { cancelCustomerBooking, createBooking } from "./booking.service";
@@ -27,11 +28,29 @@ function formValue(formData: FormData, key: string) {
   return typeof value === "string" ? value : "";
 }
 
+function actionError(error: unknown, fallback: string): BookingActionState {
+  return {
+    ok: false,
+    message: error instanceof RateLimitError || error instanceof Error ? error.message : fallback,
+  };
+}
+
 export async function createBookingAction(
   _state: BookingActionState,
   formData: FormData,
 ): Promise<BookingActionState> {
   const user = await requireAuth();
+
+  try {
+    assertRateLimit({
+      key: await requestRateLimitKey("booking:create", user.id),
+      limit: 6,
+      windowMs: 10 * 60 * 1000,
+    });
+  } catch (error) {
+    return actionError(error, "Nie udało się utworzyć rezerwacji.");
+  }
+
   const parsed = createBookingSchema.safeParse({
     serviceId: formValue(formData, "serviceId"),
     date: formValue(formData, "date"),
@@ -45,10 +64,7 @@ export async function createBookingAction(
   try {
     await createBooking(user.id, parsed.data);
   } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Nie udało się utworzyć rezerwacji.",
-    };
+    return actionError(error, "Nie udało się utworzyć rezerwacji.");
   }
 
   revalidatePath("/rezerwacja");

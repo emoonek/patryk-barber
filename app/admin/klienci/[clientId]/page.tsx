@@ -16,7 +16,7 @@ import { requireAdmin } from "@/modules/auth/auth.guards";
 import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.format";
 
 export const metadata = {
-  title: "Szczegoly klienta",
+  title: "Szczegóły klienta",
 };
 
 type AdminCustomerDetailsPageProps = {
@@ -46,7 +46,7 @@ export default async function AdminCustomerDetailsPage({ params }: AdminCustomer
             className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
             href="/admin/klienci"
           >
-            Wroc do klientow
+            Wróć do klientów
           </Link>
           <Link
             className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
@@ -78,7 +78,7 @@ export default async function AdminCustomerDetailsPage({ params }: AdminCustomer
           {customer.isBlocked ? (
             <>
               <p>
-                <span className="text-barber-cream">Powod blokady:</span> {customer.blockedReason ?? "-"}
+                <span className="text-barber-cream">Powód blokady:</span> {customer.blockedReason ?? "-"}
               </p>
               <p>
                 <span className="text-barber-cream">Data blokady:</span>{" "}
@@ -101,7 +101,7 @@ export default async function AdminCustomerDetailsPage({ params }: AdminCustomer
             <span className="text-barber-cream">Wszystkie rezerwacje:</span> {customer._count.bookings}
           </p>
           <p>
-            <span className="text-barber-cream">Nadchodzace:</span> {customer.upcomingBookings.length}
+            <span className="text-barber-cream">Nadchodzące:</span> {customer.upcomingBookings.length}
           </p>
           <p>
             <span className="text-barber-cream">Historia:</span> {customer.bookingHistory.length}
@@ -118,8 +118,8 @@ export default async function AdminCustomerDetailsPage({ params }: AdminCustomer
       </div>
 
       <section className="mt-10">
-        <h2 className="mb-4 text-2xl font-semibold text-barber-cream">Nadchodzace rezerwacje</h2>
-        <BookingList bookings={customer.upcomingBookings} emptyText="Brak nadchodzacych rezerwacji." />
+        <h2 className="mb-4 text-2xl font-semibold text-barber-cream">Nadchodzące rezerwacje</h2>
+        <BookingList bookings={customer.upcomingBookings} emptyText="Brak nadchodzących rezerwacji." />
       </section>
 
       <section className="mt-10">
@@ -146,7 +146,7 @@ export default async function AdminCustomerDetailsPage({ params }: AdminCustomer
                     <form action={adminDeleteCustomerNoteAction}>
                       <input name="clientId" type="hidden" value={customer.id} />
                       <input name="noteId" type="hidden" value={note.id} />
-                      <button className="text-sm font-semibold text-red-300">Usun</button>
+                      <button className="text-sm font-semibold text-red-300">Usuń</button>
                     </form>
                   </div>
                 </article>

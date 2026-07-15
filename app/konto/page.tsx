@@ -1,5 +1,6 @@
 import { logoutAction } from "@/modules/auth/auth.actions";
 import { requireAuth } from "@/modules/auth/auth.guards";
+import { ResendVerificationForm } from "@/modules/auth/components/resend-verification-form";
 import { AccountBookings } from "@/modules/booking/components/account-bookings";
 import { listCustomerBookings } from "@/modules/booking/booking.repository";
 
@@ -32,7 +33,15 @@ export default async function AccountPage() {
       </div>
       {user.isBlocked ? (
         <div className="mt-6 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
-          Twoje konto zostało zablokowane. Powód: {user.blockedReason ?? "nie podano powodu"}.
+          Twoje konto jest zablokowane, dlatego nie możesz tworzyć nowych rezerwacji. Powód:{" "}
+          {user.blockedReason ?? "skontaktuj się z salonem, aby poznać szczegóły"}.
+        </div>
+      ) : null}
+      {!user.emailVerifiedAt ? (
+        <div className="mt-6 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
+          Potwierdź adres email, aby móc rezerwować wizyty online. Link weryfikacyjny wysłaliśmy po
+          rejestracji; w trybie dev jego treść jest widoczna w konsoli serwera.
+          <ResendVerificationForm />
         </div>
       ) : null}
       <AccountBookings history={history} upcoming={upcoming} />

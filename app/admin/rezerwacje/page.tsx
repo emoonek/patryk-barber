@@ -1,5 +1,6 @@
 import { BookingStatus } from "@prisma/client";
 import Link from "next/link";
+import { AdminNav } from "@/modules/admin/components/admin-nav";
 import { adminBookingFiltersSchema } from "@/modules/admin-bookings/admin-booking.schemas";
 import { adminStatusLabel, customerName } from "@/modules/admin-bookings/admin-booking.format";
 import { listAdminBookings } from "@/modules/admin-bookings/admin-booking.repository";
@@ -34,13 +35,8 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
           <p className="mb-3 text-sm uppercase tracking-[0.24em] text-barber-brass">Admin</p>
           <h1 className="text-4xl font-semibold text-barber-cream">Rezerwacje</h1>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
-            href="/admin"
-          >
-            Dashboard
-          </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <AdminNav />
           <Link
             className="bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream"
             href="/admin/rezerwacje/nowa"
@@ -89,7 +85,7 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
               <th className="px-4 py-3 font-medium">Klient</th>
               <th className="px-4 py-3 font-medium">Email</th>
               <th className="px-4 py-3 font-medium">Telefon</th>
-              <th className="px-4 py-3 font-medium">Usluga</th>
+              <th className="px-4 py-3 font-medium">Usługa</th>
               <th className="px-4 py-3 font-medium">Cena</th>
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Akcja</th>
@@ -110,7 +106,7 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
                 <td className="px-4 py-3">{adminStatusLabel(booking.status)}</td>
                 <td className="px-4 py-3">
                   <Link className="font-semibold text-barber-brass" href={`/admin/rezerwacje/${booking.id}`}>
-                    Szczegoly
+                    Szczegóły
                   </Link>
                 </td>
               </tr>
@@ -118,7 +114,9 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
           </tbody>
         </table>
         {bookings.length === 0 ? (
-          <p className="p-5 text-sm text-barber-muted">Nie znaleziono rezerwacji dla wybranych filtrow.</p>
+          <p className="p-5 text-sm text-barber-muted">
+            Brak rezerwacji dla wybranych filtrów. Zmień filtr albo dodaj rezerwację manualnie.
+          </p>
         ) : null}
       </div>
     </section>

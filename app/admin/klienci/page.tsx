@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminNav } from "@/modules/admin/components/admin-nav";
 import { adminCustomerSearchSchema } from "@/modules/admin-customers/admin-customer.schemas";
 import {
   activityLabel,
@@ -35,13 +36,8 @@ export default async function AdminCustomersPage({ searchParams }: AdminCustomer
           <p className="mb-3 text-sm uppercase tracking-[0.24em] text-barber-brass">Admin</p>
           <h1 className="text-4xl font-semibold text-barber-cream">Klienci</h1>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
-            href="/admin"
-          >
-            Dashboard
-          </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <AdminNav />
           <Link
             className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
             href="/admin/rezerwacje/nowa"
@@ -58,7 +54,7 @@ export default async function AdminCustomersPage({ searchParams }: AdminCustomer
             className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
             defaultValue={filters.q}
             name="q"
-            placeholder="Imie, nazwisko, email lub telefon"
+            placeholder="Imię, nazwisko, email lub telefon"
           />
         </label>
         <button className="self-end bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream">
@@ -76,7 +72,7 @@ export default async function AdminCustomersPage({ searchParams }: AdminCustomer
               <th className="px-4 py-3 font-medium">Rola</th>
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Rezerwacje</th>
-              <th className="px-4 py-3 font-medium">Aktywne przyszle</th>
+              <th className="px-4 py-3 font-medium">Aktywne przyszłe</th>
               <th className="px-4 py-3 font-medium">Utworzono</th>
               <th className="px-4 py-3 font-medium">Akcja</th>
             </tr>
@@ -94,7 +90,7 @@ export default async function AdminCustomersPage({ searchParams }: AdminCustomer
                 <td className="px-4 py-3">{formatDate(customer.createdAt)}</td>
                 <td className="px-4 py-3">
                   <Link className="font-semibold text-barber-brass" href={`/admin/klienci/${customer.id}`}>
-                    Szczegoly
+                    Szczegóły
                   </Link>
                 </td>
               </tr>
@@ -102,7 +98,9 @@ export default async function AdminCustomersPage({ searchParams }: AdminCustomer
           </tbody>
         </table>
         {customers.length === 0 ? (
-          <p className="p-5 text-sm text-barber-muted">Nie znaleziono klientow dla podanego wyszukiwania.</p>
+          <p className="p-5 text-sm text-barber-muted">
+            Brak klientów dla podanego wyszukiwania. Wyczyść wyszukiwarkę albo poczekaj na pierwszą rejestrację.
+          </p>
         ) : null}
       </div>
     </section>

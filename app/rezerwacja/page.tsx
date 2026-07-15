@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { requireAuth } from "@/modules/auth/auth.guards";
+import { ResendVerificationForm } from "@/modules/auth/components/resend-verification-form";
 import { BookingForm } from "@/modules/booking/components/booking-form";
 import { formatMoney, todayInputValue } from "@/modules/booking/booking.format";
 import { listActiveServices } from "@/modules/booking/booking.repository";
@@ -47,13 +48,16 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
 
       {!user.emailVerifiedAt ? (
         <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
-          Najpierw zweryfikuj adres email. Link weryfikacyjny w trybie dev jest wypisywany w konsoli serwera.
+          Aby zarezerwować wizytę, potwierdź adres email. Link weryfikacyjny wysłaliśmy po rejestracji;
+          w trybie dev jego treść jest widoczna w konsoli serwera.
+          <ResendVerificationForm />
         </div>
       ) : null}
 
       {user.isBlocked ? (
         <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
-          Twoje konto zostało zablokowane. Powód: {user.blockedReason ?? "nie podano powodu"}.
+          Twoje konto jest zablokowane, dlatego rezerwacja online jest niedostępna. Powód:{" "}
+          {user.blockedReason ?? "skontaktuj się z salonem, aby poznać szczegóły"}.
         </div>
       ) : null}
 
@@ -101,7 +105,7 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
 
         {user.isBlocked ? (
           <div className="border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
-            Rezerwacja online jest niedostepna dla zablokowanego konta.
+            Rezerwacja online jest niedostępna dla zablokowanego konta.
           </div>
         ) : user.emailVerifiedAt ? (
           <BookingForm date={selectedDate} serviceId={selectedServiceId ?? ""} slots={slots} />

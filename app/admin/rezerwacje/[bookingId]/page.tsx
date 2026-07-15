@@ -12,7 +12,7 @@ import { requireAdmin } from "@/modules/auth/auth.guards";
 import { formatDate, formatMoney, formatTime } from "@/modules/booking/booking.format";
 
 export const metadata = {
-  title: "Szczegoly rezerwacji",
+  title: "Szczegóły rezerwacji",
 };
 
 type AdminBookingDetailsPageProps = {
@@ -35,13 +35,13 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="mb-3 text-sm uppercase tracking-[0.24em] text-barber-brass">Admin</p>
-          <h1 className="text-4xl font-semibold text-barber-cream">Szczegoly rezerwacji</h1>
+          <h1 className="text-4xl font-semibold text-barber-cream">Szczegóły rezerwacji</h1>
         </div>
         <Link
           className="w-fit border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
           href="/admin/rezerwacje"
         >
-          Wroc do listy
+          Wróć do listy
         </Link>
       </div>
 
@@ -58,20 +58,20 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
             <span className="text-barber-cream">Telefon:</span> {booking.customer.phone ?? "-"}
           </p>
           <Link className="font-semibold text-barber-brass" href={`/admin/klienci/${booking.customer.id}`}>
-            Przejdz do klienta
+            Przejdź do klienta
           </Link>
         </section>
 
         <section className="grid gap-4 border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
           <h2 className="text-2xl font-semibold text-barber-cream">Dane wizyty</h2>
           <p>
-            <span className="text-barber-cream">Usluga:</span> {booking.serviceNameSnapshot}
+            <span className="text-barber-cream">Usługa:</span> {booking.serviceNameSnapshot}
           </p>
           <p>
             <span className="text-barber-cream">Cena:</span> {formatMoney(booking.servicePriceCentsSnapshot)}
           </p>
           <p>
-            <span className="text-barber-cream">Czas uslugi:</span> {booking.serviceDurationMinutesSnapshot} min
+            <span className="text-barber-cream">Czas usługi:</span> {booking.serviceDurationMinutesSnapshot} min
           </p>
           <p>
             <span className="text-barber-cream">Termin:</span> {formatDate(booking.startAt)},{" "}
@@ -108,7 +108,7 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
       </div>
 
       <section className="mt-8">
-        <h2 className="mb-4 text-2xl font-semibold text-barber-cream">Historia statusow</h2>
+        <h2 className="mb-4 text-2xl font-semibold text-barber-cream">Historia statusów</h2>
         <div className="grid gap-3">
           {booking.statusHistory.length > 0 ? (
             booking.statusHistory.map((entry) => (
@@ -126,7 +126,7 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
             ))
           ) : (
             <p className="border border-white/10 bg-black/20 p-5 text-sm text-barber-muted">
-              Brak historii statusow.
+              Brak historii statusów.
             </p>
           )}
         </div>

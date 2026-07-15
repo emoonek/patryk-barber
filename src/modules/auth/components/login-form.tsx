@@ -41,6 +41,9 @@ export function LoginForm() {
       <Link className="text-sm text-barber-brass transition hover:text-barber-cream" href="/zapomnialem-hasla">
         Nie pamiętam hasła
       </Link>
+      <Link className="text-sm text-barber-brass transition hover:text-barber-cream" href="/rejestracja">
+        Nie mam jeszcze konta
+      </Link>
     </form>
   );
 }

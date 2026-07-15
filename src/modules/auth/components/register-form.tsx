@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { registerAction, type AuthActionState } from "../auth.actions";
 import { AuthFieldError } from "./auth-field-error";
@@ -59,7 +60,17 @@ export function RegisterForm() {
 
       <label className="flex items-start gap-3 text-sm leading-6 text-barber-muted">
         <input className="mt-1" name="termsAccepted" type="checkbox" />
-        Akceptuję regulamin serwisu Patryk Barber.
+        <span>
+          Akceptuję{" "}
+          <Link className="text-barber-brass hover:text-barber-cream" href="/regulamin-rezerwacji">
+            regulamin rezerwacji
+          </Link>{" "}
+          oraz{" "}
+          <Link className="text-barber-brass hover:text-barber-cream" href="/polityka-prywatnosci">
+            politykę prywatności
+          </Link>
+          .
+        </span>
       </label>
       <AuthFieldError errors={state.errors?.termsAccepted} />
 

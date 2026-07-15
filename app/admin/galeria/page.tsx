@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminNav } from "@/modules/admin/components/admin-nav";
 import { requireAdmin } from "@/modules/auth/auth.guards";
 import {
   getAdminGalleryImage,
@@ -33,18 +34,13 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
           <p className="mb-3 text-sm uppercase tracking-[0.24em] text-barber-brass">Admin</p>
           <h1 className="text-4xl font-semibold text-barber-cream">Galeria</h1>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Link
-            className="border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
-            href="/admin"
-          >
-            Dashboard
-          </Link>
+        <div className="flex flex-wrap items-center gap-3">
+          <AdminNav />
           <Link
             className="bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream"
             href="#dodaj-zdjecie"
           >
-            Dodaj zdjecie
+            Dodaj zdjęcie
           </Link>
         </div>
       </div>
@@ -55,7 +51,7 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
             <tr className="border-b border-white/10">
               <th className="px-4 py-3 font-medium">Miniatura</th>
               <th className="px-4 py-3 font-medium">Image URL</th>
-              <th className="px-4 py-3 font-medium">Zrodlo</th>
+              <th className="px-4 py-3 font-medium">Źródło</th>
               <th className="px-4 py-3 font-medium">Alt text</th>
               <th className="px-4 py-3 font-medium">Caption</th>
               <th className="px-4 py-3 font-medium">Kolejnosc</th>
@@ -81,7 +77,7 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
                   {image.storageKey ? (
                     <span className="border border-green-300/30 px-2 py-1 text-xs text-green-200">Storage</span>
                   ) : (
-                    <span className="border border-white/10 px-2 py-1 text-xs text-barber-muted">Reczny URL</span>
+                    <span className="border border-white/10 px-2 py-1 text-xs text-barber-muted">Ręczny URL</span>
                   )}
                 </td>
                 <td className="max-w-[220px] px-4 py-3">{image.altText}</td>
@@ -101,13 +97,15 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
           </tbody>
         </table>
         {images.length === 0 ? (
-          <p className="p-5 text-sm text-barber-muted">Nie dodano jeszcze zadnych zdjec.</p>
+          <p className="p-5 text-sm text-barber-muted">
+            Brak zdjęć galerii. Dodaj zdjęcie z Cloudinary albo tymczasowy URL developerski.
+          </p>
         ) : null}
       </div>
 
       {params.edit && !editedImage ? (
         <p className="mt-6 border border-red-300/30 bg-red-950/20 p-5 text-sm text-red-100">
-          Nie znaleziono zdjecia do edycji.
+          Nie znaleziono zdjęcia do edycji.
         </p>
       ) : null}
 
@@ -122,8 +120,8 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
       </div>
 
       <div className="mt-8 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
-        Upload plikow korzysta z warstwy storage przygotowanej pod Cloudinary. W development nadal mozna
-        wpisac imageUrl recznie, np. do zdjec z katalogu public/galeria-testowa.
+        Upload plików korzysta z warstwy storage przygotowanej pod Cloudinary. W development nadal można
+        wpisać imageUrl ręcznie, np. do zdjęć z katalogu public/galeria-testowa.
       </div>
     </section>
   );

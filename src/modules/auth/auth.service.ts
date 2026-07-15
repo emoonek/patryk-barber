@@ -155,6 +155,44 @@ export async function requestPasswordReset(input: ForgotPasswordInput) {
   });
 }
 
+export async function resendVerificationEmail(userId: string) {
+  const user = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      deletedAt: null,
+      isActive: true,
+    },
+    select: {
+      id: true,
+      email: true,
+      emailVerifiedAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error("Nie znaleziono aktywnego konta.");
+  }
+
+  if (user.emailVerifiedAt) {
+    return;
+  }
+
+  const token = generateToken();
+
+  await prisma.emailVerificationToken.create({
+    data: {
+      userId: user.id,
+      tokenHash: hashToken(token),
+      expiresAt: createFutureDate(60 * 24),
+    },
+  });
+
+  await sendVerificationEmail({
+    to: user.email,
+    verificationUrl: `${appUrl()}/weryfikacja-email/${token}`,
+  });
+}
+
 export async function resetPassword(input: ResetPasswordInput) {
   const tokenHash = hashToken(input.token);
   const now = new Date();

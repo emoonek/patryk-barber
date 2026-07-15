@@ -1,6 +1,8 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { assertRateLimit, RateLimitError, requestRateLimitKey } from "@/lib/security/rate-limit";
+import { requireAuth } from "./auth.guards";
 import {
   forgotPasswordSchema,
   loginSchema,
@@ -12,6 +14,7 @@ import {
   logoutUser,
   registerUser,
   requestPasswordReset,
+  resendVerificationEmail,
   resetPassword,
 } from "./auth.service";
 
@@ -36,11 +39,30 @@ function formValue(formData: FormData, key: string) {
   return typeof value === "string" ? value : "";
 }
 
+function actionError(error: unknown, fallback: string): AuthActionState {
+  return {
+    ok: false,
+    message: error instanceof RateLimitError || error instanceof Error ? error.message : fallback,
+  };
+}
+
 export async function registerAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
+  const email = formValue(formData, "email");
+
+  try {
+    assertRateLimit({
+      key: await requestRateLimitKey("auth:register", email),
+      limit: 5,
+      windowMs: 15 * 60 * 1000,
+    });
+  } catch (error) {
+    return actionError(error, "Nie udało się utworzyć konta.");
+  }
+
   const parsed = registerSchema.safeParse({
     firstName: formValue(formData, "firstName"),
     lastName: formValue(formData, "lastName"),
-    email: formValue(formData, "email"),
+    email,
     password: formValue(formData, "password"),
     confirmPassword: formValue(formData, "confirmPassword"),
     phone: formValue(formData, "phone"),
@@ -54,18 +76,27 @@ export async function registerAction(_state: AuthActionState, formData: FormData
   try {
     await registerUser(parsed.data);
   } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Nie udało się utworzyć konta.",
-    };
+    return actionError(error, "Nie udało się utworzyć konta.");
   }
 
   redirect("/konto");
 }
 
 export async function loginAction(_state: AuthActionState, formData: FormData): Promise<AuthActionState> {
+  const email = formValue(formData, "email");
+
+  try {
+    assertRateLimit({
+      key: await requestRateLimitKey("auth:login", email),
+      limit: 8,
+      windowMs: 15 * 60 * 1000,
+    });
+  } catch (error) {
+    return actionError(error, "Nie udało się zalogować.");
+  }
+
   const parsed = loginSchema.safeParse({
-    email: formValue(formData, "email"),
+    email,
     password: formValue(formData, "password"),
   });
 
@@ -76,10 +107,7 @@ export async function loginAction(_state: AuthActionState, formData: FormData): 
   try {
     await loginUser(parsed.data);
   } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Nie udało się zalogować.",
-    };
+    return actionError(error, "Nie udało się zalogować.");
   }
 
   redirect("/konto");
@@ -94,8 +122,20 @@ export async function forgotPasswordAction(
   _state: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  const email = formValue(formData, "email");
+
+  try {
+    assertRateLimit({
+      key: await requestRateLimitKey("auth:forgot-password", email),
+      limit: 5,
+      windowMs: 15 * 60 * 1000,
+    });
+  } catch (error) {
+    return actionError(error, "Nie udało się wysłać linku resetu hasła.");
+  }
+
   const parsed = forgotPasswordSchema.safeParse({
-    email: formValue(formData, "email"),
+    email,
   });
 
   if (!parsed.success) {
@@ -105,15 +145,12 @@ export async function forgotPasswordAction(
   try {
     await requestPasswordReset(parsed.data);
   } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Nie udalo sie wyslac linku resetu hasla.",
-    };
+    return actionError(error, "Nie udało się wysłać linku resetu hasła.");
   }
 
   return {
     ok: true,
-    message: "Jesli konto istnieje, wyslalismy link resetu hasla.",
+    message: "Jeśli konto istnieje, wysłaliśmy link resetu hasła.",
   };
 }
 
@@ -121,6 +158,16 @@ export async function resetPasswordAction(
   _state: AuthActionState,
   formData: FormData,
 ): Promise<AuthActionState> {
+  try {
+    assertRateLimit({
+      key: await requestRateLimitKey("auth:reset-password"),
+      limit: 8,
+      windowMs: 15 * 60 * 1000,
+    });
+  } catch (error) {
+    return actionError(error, "Nie udało się ustawić nowego hasła.");
+  }
+
   const parsed = resetPasswordSchema.safeParse({
     token: formValue(formData, "token"),
     password: formValue(formData, "password"),
@@ -134,14 +181,33 @@ export async function resetPasswordAction(
   try {
     await resetPassword(parsed.data);
   } catch (error) {
-    return {
-      ok: false,
-      message: error instanceof Error ? error.message : "Nie udało się ustawić nowego hasła.",
-    };
+    return actionError(error, "Nie udało się ustawić nowego hasła.");
   }
 
   return {
     ok: true,
     message: "Hasło zostało zmienione. Możesz się zalogować.",
+  };
+}
+
+export async function resendVerificationEmailAction(): Promise<AuthActionState> {
+  const user = await requireAuth();
+
+  try {
+    assertRateLimit({
+      key: await requestRateLimitKey("auth:resend-verification", user.email),
+      limit: 3,
+      windowMs: 15 * 60 * 1000,
+    });
+    await resendVerificationEmail(user.id);
+  } catch (error) {
+    return actionError(error, "Nie udało się wysłać maila weryfikacyjnego.");
+  }
+
+  return {
+    ok: true,
+    message: user.emailVerifiedAt
+      ? "Adres email jest już zweryfikowany."
+      : "Wysłaliśmy nowy link weryfikacyjny. W trybie dev znajdziesz go w konsoli serwera.",
   };
 }

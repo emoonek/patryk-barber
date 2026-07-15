@@ -45,7 +45,7 @@ export async function requireAdmin() {
   const user = await requireAuth();
 
   if (user.role !== UserRole.admin) {
-    redirect("/konto");
+    redirect("/brak-dostepu");
   }
 
   return user;

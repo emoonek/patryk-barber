@@ -26,11 +26,11 @@ export function AdminCustomerBlockForm({ customer }: AdminCustomerBlockFormProps
         <input name="clientId" type="hidden" value={customer.id} />
         <h2 className="text-2xl font-semibold text-barber-cream">Blokada klienta</h2>
         <p className="text-sm text-barber-muted">
-          Klient jest zablokowany i nie moze tworzyc nowych rezerwacji.
+          Klient jest zablokowany i nie może tworzyć nowych rezerwacji.
         </p>
         {customer.blockedReason ? (
           <p className="text-sm text-barber-muted">
-            <span className="text-barber-cream">Powod:</span> {customer.blockedReason}
+            <span className="text-barber-cream">Powód:</span> {customer.blockedReason}
           </p>
         ) : null}
         <button className="w-fit bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream">
@@ -45,11 +45,11 @@ export function AdminCustomerBlockForm({ customer }: AdminCustomerBlockFormProps
       <input name="clientId" type="hidden" value={customer.id} />
       <h2 className="text-2xl font-semibold text-barber-cream">Blokada klienta</h2>
       <label className="grid gap-2 text-sm text-barber-muted">
-        Powod blokady
+        Powód blokady
         <textarea
           className="min-h-28 border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
           name="reason"
-          placeholder="Opcjonalny powod widoczny w notatkach admina"
+          placeholder="Opcjonalny powód widoczny w notatkach admina"
         />
         {state.errors?.reason ? <span className="text-red-300">{state.errors.reason[0]}</span> : null}
       </label>

@@ -108,13 +108,13 @@ export async function createBooking(customerId: string, input: CreateBookingInpu
         if (user.isBlocked) {
           throw new Error(
             user.blockedReason
-              ? `Twoje konto jest zablokowane. Powod: ${user.blockedReason}`
-              : "Twoje konto jest zablokowane. Nie mozesz tworzyc nowych rezerwacji.",
+              ? `Twoje konto jest zablokowane. Powód: ${user.blockedReason}`
+              : "Twoje konto jest zablokowane. Nie możesz tworzyć nowych rezerwacji.",
           );
         }
 
         if (!user.emailVerifiedAt) {
-          throw new Error("Najpierw zweryfikuj adres email.");
+          throw new Error("Aby zarezerwować wizytę, najpierw potwierdź adres email.");
         }
 
         if (!service) {

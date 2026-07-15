@@ -27,7 +27,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
   const action = mode === "create" ? createGalleryImageAction : updateGalleryImageAction;
   const [state, formAction, pending] = useActionState(action, initialState);
   const [previewUrl, setPreviewUrl] = useState(image?.imageUrl ?? "");
-  const title = mode === "create" ? "Dodaj zdjecie" : "Edytuj zdjecie";
+  const title = mode === "create" ? "Dodaj zdjęcie" : "Edytuj zdjęcie";
 
   useEffect(() => {
     setPreviewUrl(image?.imageUrl ?? "");
@@ -40,7 +40,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
 
       <div className="grid gap-4 md:grid-cols-[2fr_1fr]">
         <label className="grid gap-2 text-sm text-barber-muted">
-          Plik zdjecia
+          Plik zdjęcia
           <input
             accept="image/jpeg,image/png,image/webp"
             className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream file:mr-4 file:border-0 file:bg-barber-brass file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
@@ -58,13 +58,13 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
         </label>
 
         <div className="grid gap-2 text-sm text-barber-muted">
-          Podglad
+          Podgląd
           <div className="flex h-24 w-24 items-center justify-center border border-white/10 bg-[#120f0d]">
             {previewUrl ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img alt="Podglad zdjecia" className="h-full w-full object-cover" src={previewUrl} />
+              <img alt="Podgląd zdjęcia" className="h-full w-full object-cover" src={previewUrl} />
             ) : (
-              <span className="px-3 text-center text-xs">Brak zdjecia</span>
+              <span className="px-3 text-center text-xs">Brak zdjęcia</span>
             )}
           </div>
         </div>
@@ -72,7 +72,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
 
       <div className="grid gap-4 md:grid-cols-[2fr_1fr]">
         <label className="grid gap-2 text-sm text-barber-muted">
-          Kolejnosc
+          Kolejność
           <input
             className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
             defaultValue={image?.sortOrder ?? 0}
@@ -116,7 +116,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
           className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
           defaultValue={image?.altText ?? ""}
           name="altText"
-          placeholder="Opis zdjecia dla dostepnosci"
+          placeholder="Opis zdjęcia dla dostępności"
         />
         {state.errors?.altText ? <span className="text-red-300">{state.errors.altText[0]}</span> : null}
       </label>
@@ -127,7 +127,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
           className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
           defaultValue={image?.title ?? ""}
           name="caption"
-          placeholder="Krotki podpis pod zdjeciem"
+          placeholder="Krótki podpis pod zdjęciem"
         />
         {state.errors?.caption ? <span className="text-red-300">{state.errors.caption[0]}</span> : null}
       </label>
@@ -147,7 +147,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
           className="bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream disabled:opacity-60"
           disabled={pending}
         >
-          {mode === "create" ? "Dodaj zdjecie" : "Zapisz zdjecie"}
+          {mode === "create" ? "Dodaj zdjęcie" : "Zapisz zdjęcie"}
         </button>
         <GalleryActionMessage state={state} />
       </div>

@@ -38,7 +38,7 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
     <div className="grid gap-8">
       <div className="grid gap-6 lg:grid-cols-2">
         <form action={dayAction} className="grid gap-4 border border-white/10 bg-black/20 p-6">
-          <h2 className="text-2xl font-semibold text-barber-cream">Zablokuj caly dzien</h2>
+          <h2 className="text-2xl font-semibold text-barber-cream">Zablokuj cały dzień</h2>
           <label className="grid gap-2 text-sm text-barber-muted">
             Data
             <input
@@ -51,7 +51,7 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
             {dayState.errors?.date ? <span className="text-red-300">{dayState.errors.date[0]}</span> : null}
           </label>
           <label className="grid gap-2 text-sm text-barber-muted">
-            Powod
+            Powód
             <input
               className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
               name="reason"
@@ -63,7 +63,7 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
               className="bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream disabled:opacity-60"
               disabled={dayPending}
             >
-              Zablokuj dzien
+              Zablokuj dzień
             </button>
             <AdminActionMessage state={dayState} />
           </div>
@@ -104,7 +104,7 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
             </select>
           </label>
           <label className="grid gap-2 text-sm text-barber-muted">
-            Powod
+            Powód
             <input
               className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
               name="reason"
@@ -136,7 +136,7 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
                   <p className="font-medium text-barber-cream">
                     {formatDate(exception.startsAt)}, {formatTime(exception.startsAt)} - {formatTime(exception.endsAt)}
                   </p>
-                  <p>{exception.reason ?? "Bez powodu"}</p>
+                  <p>{exception.reason ?? "Bez podanego powodu"}</p>
                 </div>
                 <p>
                   Koniec: {formatDate(exception.endsAt)}, {formatTime(exception.endsAt)}
@@ -144,14 +144,14 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
                 <form action={deleteAvailabilityExceptionAction}>
                   <input name="exceptionId" type="hidden" value={exception.id} />
                   <button className="border border-red-300/40 px-4 py-2 font-semibold text-red-100 transition hover:bg-red-950/40">
-                    Usun blokade
+                    Usuń blokadę
                   </button>
                 </form>
               </div>
             ))
           ) : (
             <p className="border border-white/10 bg-black/20 p-5 text-sm text-barber-muted">
-              Nie ma jeszcze blokad dostepnosci.
+              Brak blokad dostępności. Aktualnie wszystkie wolne sloty mogą być widoczne dla klientów.
             </p>
           )}
         </div>
