@@ -124,13 +124,55 @@ Panel `/admin/galeria` obsługuje upload JPG, PNG i WebP do Cloudinary oraz ręc
 Wymagane zmienne:
 
 ```env
-CLOUDINARY_CLOUD_NAME=""
-CLOUDINARY_API_KEY=""
-CLOUDINARY_API_SECRET=""
+CLOUDINARY_CLOUD_NAME="twoj-cloud-name"
+CLOUDINARY_API_KEY="twoj-api-key"
+CLOUDINARY_API_SECRET="twoj-api-secret"
 CLOUDINARY_FOLDER="patbarber/gallery"
 ```
 
-Maksymalny rozmiar uploadu to 5 MB. Jeśli Cloudinary nie jest skonfigurowane, panel admina zwraca czytelny błąd zamiast szczegółów technicznych.
+Gdzie znaleźć wartości w Cloudinary:
+
+1. Zaloguj się do Cloudinary.
+2. Wejdź w `Dashboard`.
+3. Skopiuj `Cloud name` do `CLOUDINARY_CLOUD_NAME`.
+4. Skopiuj `API Key` do `CLOUDINARY_API_KEY`.
+5. Skopiuj `API Secret` do `CLOUDINARY_API_SECRET`. Jeśli Cloudinary ukrywa sekret, kliknij opcję pokazania albo skopiowania sekretu.
+6. W `CLOUDINARY_FOLDER` wpisz folder dla galerii, np. `patbarber/gallery`. Folder zostanie użyty jako miejsce uploadu i będzie częścią `public_id`.
+
+Pliku `.env` nie wolno commitować. Prawdziwe wartości sekretów powinny zostać tylko lokalnie i w konfiguracji środowiska produkcyjnego.
+
+Test uploadu lokalnie:
+
+1. Uzupełnij zmienne `CLOUDINARY_*` w `.env`.
+2. Uruchom aplikację ponownie, żeby Next.js wczytał nowe env:
+
+```bash
+npm run dev
+```
+
+3. Wejdź na `http://localhost:3000/admin/galeria`.
+4. Sprawdź, czy panel pokazuje status `Cloudinary skonfigurowane`.
+5. Wybierz plik JPG, PNG albo WebP do 5 MB.
+6. Uzupełnij opis w `Alt text` albo `Caption`.
+7. Kliknij `Dodaj zdjęcie`.
+8. Sprawdź, czy nowe zdjęcie ma źródło `Storage` i czy pojawia się na `/galeria`.
+9. W Cloudinary sprawdź, czy plik trafił do folderu z `CLOUDINARY_FOLDER`.
+
+Maksymalny rozmiar uploadu to 5 MB. Jeśli Cloudinary nie jest skonfigurowane, panel admina pokazuje status konfiguracji i zwraca czytelny błąd bez ujawniania sekretów.
+
+### Checklist testu uploadu z telefonu
+
+- Telefon i komputer są w tej samej sieci Wi-Fi.
+- Uruchom lokalnie dev server na hoście dostępnym z telefonu, np. `npm run dev -- --hostname 0.0.0.0`.
+- Na telefonie otwórz adres komputera w sieci lokalnej, np. `http://192.168.1.10:3000/admin/galeria`.
+- Zaloguj się jako admin.
+- Potwierdź status `Cloudinary skonfigurowane`.
+- Wybierz zdjęcie z galerii telefonu w formacie JPG, PNG albo WebP.
+- Potwierdź, że formularz nie wymusza aparatu.
+- Dodaj opis i kliknij `Dodaj zdjęcie`.
+- Sprawdź miniaturę w panelu admina.
+- Otwórz `/galeria` na telefonie i sprawdź, czy zdjęcie ładuje się poprawnie.
+- Usuń testowe zdjęcie z panelu admina i sprawdź, czy znika z galerii.
 
 ## Bezpieczeństwo MVP
 
@@ -169,6 +211,6 @@ npm run prisma:studio
 - Wykonaj test mobile dla rejestracji, logowania, rezerwacji i panelu admina.
 - Zweryfikuj finalny regulamin i politykę prywatności przed publikacją.
 
-## ETAP 13
+## ETAP 14
 
 Następny etap powinien skupić się na produkcyjnym QA i przygotowaniu wdrożenia: testach end-to-end kluczowych ścieżek, konfiguracji hostingu, domeny, SMTP/Resend, Cloudinary, monitoringu błędów oraz decyzji, czy MVP idzie live bez płatności online.

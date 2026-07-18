@@ -1,7 +1,13 @@
-import crypto from "node:crypto";
+import { v2 as cloudinary, type UploadApiOptions, type UploadApiResponse } from "cloudinary";
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const REQUIRED_CLOUDINARY_ENV = [
+  "CLOUDINARY_CLOUD_NAME",
+  "CLOUDINARY_API_KEY",
+  "CLOUDINARY_API_SECRET",
+  "CLOUDINARY_FOLDER",
+] as const;
 
 export type StoredImage = {
   imageUrl: string;
@@ -13,6 +19,20 @@ export type StorageValidationError = {
   field: "imageFile";
   message: string;
 };
+
+export type CloudinaryConfigStatus = {
+  isConfigured: boolean;
+  missingKeys: string[];
+};
+
+export function getCloudinaryConfigStatus(): CloudinaryConfigStatus {
+  const missingKeys = REQUIRED_CLOUDINARY_ENV.filter((key) => !process.env[key]?.trim());
+
+  return {
+    isConfigured: missingKeys.length === 0,
+    missingKeys,
+  };
+}
 
 export function validateImageFile(file: File): StorageValidationError | null {
   if (!ALLOWED_IMAGE_TYPES.includes(file.type as (typeof ALLOWED_IMAGE_TYPES)[number])) {
@@ -50,42 +70,25 @@ type CloudinaryConfig = {
   cloudName: string;
   apiKey: string;
   apiSecret: string;
-  folder?: string;
+  folder: string;
 };
 
 class CloudinaryStorage {
   async uploadImage(file: File): Promise<StoredImage> {
     const config = getCloudinaryConfig();
-    const timestamp = Math.floor(Date.now() / 1000).toString();
-    const paramsToSign: Record<string, string> = { timestamp };
+    configureCloudinary(config);
 
-    if (config.folder) {
-      paramsToSign.folder = config.folder;
-    }
+    let result: UploadApiResponse;
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("api_key", config.apiKey);
-    formData.append("timestamp", timestamp);
-    formData.append("signature", signCloudinaryParams(paramsToSign, config.apiSecret));
-
-    if (config.folder) {
-      formData.append("folder", config.folder);
-    }
-
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/upload`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
+    try {
+      result = await uploadFileBuffer(Buffer.from(await file.arrayBuffer()), {
+        allowed_formats: ["jpg", "jpeg", "png", "webp"],
+        folder: config.folder,
+        resource_type: "image",
+      });
+    } catch {
       throw new Error("Nie udalo sie wyslac zdjecia do Cloudinary. Sprawdz konfiguracje i sprobuj ponownie.");
     }
-
-    const result = (await response.json()) as {
-      secure_url?: string;
-      public_id?: string;
-    };
 
     if (!result.secure_url || !result.public_id) {
       throw new Error("Cloudinary nie zwrocilo poprawnych danych zdjecia.");
@@ -100,24 +103,18 @@ class CloudinaryStorage {
 
   async deleteImage(storageKey: string): Promise<void> {
     const config = getCloudinaryConfig();
-    const timestamp = Math.floor(Date.now() / 1000).toString();
-    const paramsToSign = {
-      public_id: storageKey,
-      timestamp,
-    };
+    configureCloudinary(config);
 
-    const formData = new FormData();
-    formData.append("public_id", storageKey);
-    formData.append("api_key", config.apiKey);
-    formData.append("timestamp", timestamp);
-    formData.append("signature", signCloudinaryParams(paramsToSign, config.apiSecret));
+    try {
+      const result = await cloudinary.uploader.destroy(storageKey, {
+        invalidate: true,
+        resource_type: "image",
+      });
 
-    const response = await fetch(`https://api.cloudinary.com/v1_1/${config.cloudName}/image/destroy`, {
-      method: "POST",
-      body: formData,
-    });
-
-    if (!response.ok) {
+      if (result.result !== "ok" && result.result !== "not found") {
+        throw new Error("Cloudinary destroy failed.");
+      }
+    } catch {
       throw new Error("Nie udalo sie usunac zdjecia ze storage. Sprawdz konfiguracje Cloudinary.");
     }
   }
@@ -127,26 +124,45 @@ function getCloudinaryConfig(): CloudinaryConfig {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
   const apiKey = process.env.CLOUDINARY_API_KEY?.trim();
   const apiSecret = process.env.CLOUDINARY_API_SECRET?.trim();
+  const folder = process.env.CLOUDINARY_FOLDER?.trim();
+  const status = getCloudinaryConfigStatus();
 
-  if (!cloudName || !apiKey || !apiSecret) {
-    throw new Error("Upload pliku wymaga konfiguracji Cloudinary. Na czas developmentu możesz użyć opcji developerskiej Image URL.");
+  if (!status.isConfigured || !cloudName || !apiKey || !apiSecret || !folder) {
+    throw new Error(
+      `Cloudinary nie jest skonfigurowane. Brakuje: ${status.missingKeys.join(", ")}. Upload plików nie będzie działał, dopóki nie uzupełnisz zmiennych w .env.`,
+    );
   }
 
   return {
     cloudName,
     apiKey,
     apiSecret,
-    folder: process.env.CLOUDINARY_FOLDER?.trim() || undefined,
+    folder,
   };
 }
 
-function signCloudinaryParams(params: Record<string, string>, apiSecret: string) {
-  const payload = Object.keys(params)
-    .sort()
-    .map((key) => `${key}=${params[key]}`)
-    .join("&");
+function configureCloudinary(config: CloudinaryConfig) {
+  cloudinary.config({
+    cloud_name: config.cloudName,
+    api_key: config.apiKey,
+    api_secret: config.apiSecret,
+    secure: true,
+  });
+}
 
-  return crypto.createHash("sha1").update(`${payload}${apiSecret}`).digest("hex");
+function uploadFileBuffer(buffer: Buffer, options: UploadApiOptions): Promise<UploadApiResponse> {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(options, (error, result) => {
+      if (error || !result) {
+        reject(error ?? new Error("Cloudinary upload did not return a result."));
+        return;
+      }
+
+      resolve(result);
+    });
+
+    uploadStream.end(buffer);
+  });
 }
 
 function buildCloudinaryThumbnailUrl(imageUrl: string) {

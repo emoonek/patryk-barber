@@ -43,7 +43,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
           Plik zdjęcia
           <input
             accept="image/jpeg,image/png,image/webp"
-            className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream file:mr-4 file:border-0 file:bg-barber-brass file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black"
+            className="w-full border border-white/10 bg-[#120f0d] px-4 py-3 text-sm text-barber-cream file:mb-2 file:mr-4 file:border-0 file:bg-barber-brass file:px-4 file:py-2 file:text-sm file:font-semibold file:text-black sm:file:mb-0"
             name="imageFile"
             onChange={(event) => {
               const file = event.currentTarget.files?.[0];
@@ -54,6 +54,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
             }}
             type="file"
           />
+          <span className="text-xs text-barber-muted">JPG, PNG albo WebP. Maksymalnie 5 MB. Na telefonie możesz wybrać zdjęcie z galerii.</span>
           {state.errors?.imageFile ? <span className="text-red-300">{state.errors.imageFile[0]}</span> : null}
         </label>
 

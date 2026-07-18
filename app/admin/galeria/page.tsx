@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { getCloudinaryConfigStatus } from "@/lib/storage";
 import { AdminNav } from "@/modules/admin/components/admin-nav";
 import { requireAdmin } from "@/modules/auth/auth.guards";
 import {
@@ -22,6 +23,7 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
   await requireAdmin();
   const params = (await searchParams) ?? {};
   const showDeveloperOptions = process.env.APP_ENV === "development";
+  const cloudinaryStatus = getCloudinaryConfigStatus();
   const [images, editedImage] = await Promise.all([
     listAdminGalleryImages(),
     params.edit ? getAdminGalleryImage(params.edit) : Promise.resolve(null),
@@ -42,6 +44,37 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
           >
             Dodaj zdjęcie
           </Link>
+        </div>
+      </div>
+
+      <div className="mt-8 grid gap-4 md:grid-cols-[1fr_1.2fr]">
+        <div
+          className={`border p-5 text-sm leading-6 ${
+            cloudinaryStatus.isConfigured
+              ? "border-green-300/30 bg-green-950/20 text-green-100"
+              : "border-yellow-300/30 bg-yellow-950/20 text-yellow-100"
+          }`}
+        >
+          <p className="font-semibold">
+            {cloudinaryStatus.isConfigured
+              ? "Cloudinary skonfigurowane"
+              : "Cloudinary nie jest skonfigurowane - upload plików nie będzie działał"}
+          </p>
+          {!cloudinaryStatus.isConfigured ? (
+            <p className="mt-2 text-xs text-yellow-100/80">
+              Brakuje: {cloudinaryStatus.missingKeys.join(", ")}. Uzupełnij te zmienne w `.env` i uruchom aplikację ponownie.
+            </p>
+          ) : null}
+        </div>
+
+        <div className="border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
+          <p className="font-semibold text-barber-cream">Instrukcja dodawania zdjęcia</p>
+          <ol className="mt-2 list-decimal space-y-1 pl-5">
+            <li>Wybierz plik JPG, PNG albo WebP.</li>
+            <li>Upewnij się, że plik ma maksymalnie 5 MB.</li>
+            <li>Uzupełnij opis zdjęcia w polu Alt text albo Caption.</li>
+            <li>Kliknij Dodaj zdjęcie.</li>
+          </ol>
         </div>
       </div>
 
