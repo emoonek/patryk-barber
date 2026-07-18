@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { isEmailError } from "@/lib/email";
 import { requireAdmin } from "@/modules/auth/auth.guards";
 import {
   adminCancelBooking,
@@ -45,6 +46,13 @@ function validationError(errors: Record<string, string[] | undefined>): AdminAct
 }
 
 function failure(error: unknown, fallback: string): AdminActionState {
+  if (isEmailError(error)) {
+    return {
+      ok: false,
+      message: fallback,
+    };
+  }
+
   return {
     ok: false,
     message: error instanceof Error ? error.message : fallback,

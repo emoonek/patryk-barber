@@ -10,7 +10,7 @@ export default function RegisterPage() {
     <AuthShell
       eyebrow="Nowe konto"
       title="Rejestracja"
-      description="Utwórz konto klienta. Link do weryfikacji emaila pojawi się na razie w konsoli dev serwera."
+      description="Utwórz konto klienta. Link do weryfikacji emaila wyślemy na podany adres."
     >
       <RegisterForm />
     </AuthShell>

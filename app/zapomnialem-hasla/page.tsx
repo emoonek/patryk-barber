@@ -10,7 +10,7 @@ export default function ForgotPasswordPage() {
     <AuthShell
       eyebrow="Reset hasła"
       title="Nie pamiętasz hasła?"
-      description="Podaj email konta. Link resetu zostanie na razie wypisany w konsoli dev serwera."
+      description="Podaj email konta. Jeśli konto istnieje, wyślemy link resetu hasła."
     >
       <ForgotPasswordForm />
     </AuthShell>

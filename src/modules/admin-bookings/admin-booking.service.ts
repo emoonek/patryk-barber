@@ -1,5 +1,10 @@
 import { AvailabilityExceptionType, BookingActorType, BookingStatus, Prisma } from "@prisma/client";
-import { sendAdminMessageToCustomer, sendBookingCancellationEmail } from "@/lib/email";
+import {
+  sendAdminMessageToCustomer,
+  sendAdminNewBookingNotification,
+  sendBookingCancellationEmail,
+  sendBookingConfirmationEmail,
+} from "@/lib/email";
 import { prisma } from "@/lib/db/prisma";
 import {
   addMinutes,
@@ -95,7 +100,7 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
   }
 
   try {
-    await prisma.$transaction(
+    const booking = await prisma.$transaction(
       async (tx) => {
         const [customer, service] = await Promise.all([
           tx.user.findFirst({
@@ -118,7 +123,7 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
         const endAt = addMinutes(startAt, service.durationMinutes);
         await assertSlotIsFree(startAt, endAt, tx);
 
-        await tx.booking.create({
+        return tx.booking.create({
           data: {
             customerId: customer.id,
             serviceId: service.id,
@@ -139,10 +144,16 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
               },
             },
           },
+          select: adminBookingEmailSelect,
         });
       },
       { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
     );
+
+    await logAdminBookingEmailFailures("utworzeniu rezerwacji przez admina", [
+      sendBookingConfirmationEmail(toAdminBookingEmailContext(booking)),
+      sendAdminNewBookingNotification(toAdminBookingEmailContext(booking)),
+    ]);
   } catch (error) {
     handleUniqueSlotError(error);
   }

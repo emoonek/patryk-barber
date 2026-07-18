@@ -1,6 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { isEmailError } from "@/lib/email";
 import { assertRateLimit, RateLimitError, requestRateLimitKey } from "@/lib/security/rate-limit";
 import { requireAuth } from "./auth.guards";
 import {
@@ -40,6 +41,13 @@ function formValue(formData: FormData, key: string) {
 }
 
 function actionError(error: unknown, fallback: string): AuthActionState {
+  if (isEmailError(error)) {
+    return {
+      ok: false,
+      message: fallback,
+    };
+  }
+
   return {
     ok: false,
     message: error instanceof RateLimitError || error instanceof Error ? error.message : fallback,
@@ -208,6 +216,6 @@ export async function resendVerificationEmailAction(): Promise<AuthActionState> 
     ok: true,
     message: user.emailVerifiedAt
       ? "Adres email jest już zweryfikowany."
-      : "Wysłaliśmy nowy link weryfikacyjny. W trybie dev znajdziesz go w konsoli serwera.",
+      : "Wysłaliśmy nowy link weryfikacyjny.",
   };
 }

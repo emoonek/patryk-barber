@@ -1,262 +1,279 @@
-type EmailMessage = {
+import {
+  adminBookingCancellationNotificationTemplate,
+  adminMessageToCustomerTemplate,
+  adminNewBookingNotificationTemplate,
+  bookingCancellationEmailTemplate,
+  bookingConfirmationEmailTemplate,
+  passwordResetEmailTemplate,
+  testEmailTemplate,
+  verificationEmailTemplate,
+  htmlFromText,
+  type AdminMessageToCustomerInput,
+  type BookingEmailContext,
+  type EmailTemplate,
+} from "./templates";
+
+export type EmailProviderName = "console" | "resend" | "smtp";
+
+type EmailMessage = EmailTemplate & {
   to: string;
-  subject: string;
-  text: string;
-  html?: string;
 };
 
-type BookingEmailContext = {
-  customerEmail: string;
-  customerName: string;
-  serviceName: string;
-  servicePrice: string;
-  serviceDurationMinutes: number;
-  date: string;
-  time: string;
-  cancelReason?: string;
+type SmtpConfig = {
+  host: string;
+  port: number;
+  user: string;
+  password: string;
+  from: string;
 };
 
-type AdminMessageToCustomerInput = BookingEmailContext & {
-  subject: string;
-  message: string;
-};
+type EmailRuntimeConfig =
+  | {
+      provider: "console";
+    }
+  | {
+      provider: "resend";
+      apiKey: string;
+      from: string;
+    }
+  | {
+      provider: "smtp";
+      smtp: SmtpConfig;
+    };
 
-class EmailConfigurationError extends Error {
-  constructor() {
-    super("Brakuje konfiguracji wysylki email.");
+export class EmailConfigurationError extends Error {
+  constructor(message = "Brakuje konfiguracji wysyłki email.") {
+    super(message);
+    this.name = "EmailConfigurationError";
   }
 }
 
 export class EmailDeliveryError extends Error {
   constructor() {
-    super("Nie udalo sie wyslac wiadomosci email. Sprobuj ponownie pozniej.");
+    super("Nie udało się wysłać wiadomości email. Spróbuj ponownie później.");
+    this.name = "EmailDeliveryError";
   }
+}
+
+export function isEmailError(error: unknown) {
+  return error instanceof EmailConfigurationError || error instanceof EmailDeliveryError;
 }
 
 function isProduction() {
   return process.env.NODE_ENV === "production" || process.env.APP_ENV === "production";
 }
 
-function smtpConfig() {
-  const host = process.env.SMTP_HOST?.trim();
-  const port = Number(process.env.SMTP_PORT ?? 587);
-  const user = process.env.SMTP_USER?.trim();
-  const password = process.env.SMTP_PASSWORD?.trim();
-  const from = process.env.MAIL_FROM?.trim();
+function configuredProvider(): EmailProviderName {
+  const provider = process.env.EMAIL_PROVIDER?.trim().toLowerCase();
 
-  const configured = Boolean(host && port && user && password && from);
+  if (!provider) {
+    return isProduction() ? "resend" : "console";
+  }
 
-  if (!configured) {
-    if (isProduction()) {
-      throw new EmailConfigurationError();
-    }
+  if (provider === "console" || provider === "resend" || provider === "smtp") {
+    return provider;
+  }
 
-    return null;
+  throw new EmailConfigurationError('EMAIL_PROVIDER musi mieć wartość "console", "resend" albo "smtp".');
+}
+
+function requiredEnv(key: string) {
+  const value = process.env[key]?.trim();
+
+  if (!value) {
+    throw new EmailConfigurationError(`Brakuje zmiennej ${key} dla konfiguracji email.`);
+  }
+
+  return value;
+}
+
+function smtpConfig(): SmtpConfig {
+  const host = requiredEnv("SMTP_HOST");
+  const rawPort = process.env.SMTP_PORT?.trim() || "587";
+  const port = Number(rawPort);
+
+  if (!Number.isInteger(port) || port <= 0) {
+    throw new EmailConfigurationError("SMTP_PORT musi być poprawnym numerem portu.");
   }
 
   return {
-    host: host!,
+    host,
     port,
-    user: user!,
-    password: password!,
-    from: from!,
+    user: requiredEnv("SMTP_USER"),
+    password: requiredEnv("SMTP_PASSWORD"),
+    from: requiredEnv("MAIL_FROM"),
   };
 }
 
-function salonContactLines() {
-  return [
-    process.env.NEXT_PUBLIC_BUSINESS_NAME ?? "Patryk Barber",
-    process.env.NEXT_PUBLIC_BUSINESS_ADDRESS ?? "",
-    process.env.NEXT_PUBLIC_BUSINESS_PHONE ? `Telefon: ${process.env.NEXT_PUBLIC_BUSINESS_PHONE}` : "",
-    process.env.NEXT_PUBLIC_BUSINESS_EMAIL ? `Email: ${process.env.NEXT_PUBLIC_BUSINESS_EMAIL}` : "",
-  ].filter(Boolean);
-}
+function emailConfig(): EmailRuntimeConfig {
+  const provider = configuredProvider();
 
-function signature() {
-  return ["", "Pozdrawiamy,", "Patryk Barber"].join("\n");
-}
+  if (provider === "console") {
+    if (isProduction()) {
+      throw new EmailConfigurationError('W production EMAIL_PROVIDER nie może mieć wartości "console".');
+    }
 
-function htmlFromText(text: string) {
-  return text
-    .split("\n")
-    .map((line) => (line ? `<p>${escapeHtml(line)}</p>` : "<br />"))
-    .join("");
-}
-
-function escapeHtml(value: string) {
-  return value
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-async function sendEmail(message: EmailMessage) {
-  const config = smtpConfig();
-
-  if (!config) {
-    console.info(
-      [
-        "[DEV EMAIL]",
-        `Do: ${message.to}`,
-        `Temat: ${message.subject}`,
-        "",
-        message.text,
-      ].join("\n"),
-    );
-    return;
+    return { provider };
   }
 
+  if (provider === "resend") {
+    return {
+      provider,
+      apiKey: requiredEnv("RESEND_API_KEY"),
+      from: requiredEnv("MAIL_FROM"),
+    };
+  }
+
+  return {
+    provider,
+    smtp: smtpConfig(),
+  };
+}
+
+function adminEmail() {
+  return requiredEnv("ADMIN_EMAIL");
+}
+
+export function getEmailProviderName() {
+  return configuredProvider();
+}
+
+export function getEmailProviderStatus() {
   try {
+    return {
+      ok: true,
+      provider: configuredProvider(),
+      message: null,
+    };
+  } catch (error) {
+    return {
+      ok: false,
+      provider: "błąd konfiguracji",
+      message: error instanceof Error ? error.message : "Nieprawidłowa konfiguracja email.",
+    };
+  }
+}
+
+export async function sendEmail(message: EmailMessage) {
+  const config = emailConfig();
+
+  try {
+    if (config.provider === "console") {
+      console.info(
+        [
+          "[DEV EMAIL]",
+          `Provider: console`,
+          `Do: ${message.to}`,
+          `Temat: ${message.subject}`,
+          "",
+          message.text,
+        ].join("\n"),
+      );
+      return;
+    }
+
+    if (config.provider === "resend") {
+      const { Resend } = await import("resend");
+      const resend = new Resend(config.apiKey);
+      const result = await resend.emails.send({
+        from: config.from,
+        to: message.to,
+        subject: message.subject,
+        text: message.text,
+        html: message.html ?? htmlFromText(message.text),
+      });
+
+      if (result.error) {
+        console.error("[EMAIL] Resend odrzucił wysyłkę.", {
+          name: result.error.name,
+          message: result.error.message,
+        });
+        throw new EmailDeliveryError();
+      }
+
+      return;
+    }
+
     const nodemailer = await import("nodemailer");
     const transporter = nodemailer.createTransport({
-      host: config.host,
-      port: config.port,
-      secure: config.port === 465,
+      host: config.smtp.host,
+      port: config.smtp.port,
+      secure: config.smtp.port === 465,
       auth: {
-        user: config.user,
-        pass: config.password,
+        user: config.smtp.user,
+        pass: config.smtp.password,
       },
     });
 
     await transporter.sendMail({
-      from: config.from,
+      from: config.smtp.from,
       to: message.to,
       subject: message.subject,
       text: message.text,
       html: message.html ?? htmlFromText(message.text),
     });
   } catch (error) {
-    console.error("[EMAIL] Nie udalo sie wyslac wiadomosci.", error);
+    if (error instanceof EmailConfigurationError || error instanceof EmailDeliveryError) {
+      throw error;
+    }
+
+    console.error("[EMAIL] Nie udało się wysłać wiadomości.", error);
     throw new EmailDeliveryError();
   }
-}
-
-function adminEmail() {
-  const email = process.env.ADMIN_EMAIL?.trim();
-
-  if (!email && isProduction()) {
-    throw new EmailConfigurationError();
-  }
-
-  return email ?? "admin@example.com";
-}
-
-function bookingDetails(context: BookingEmailContext) {
-  return [
-    `Usluga: ${context.serviceName}`,
-    `Data: ${context.date}`,
-    `Godzina: ${context.time}`,
-    `Cena: ${context.servicePrice}`,
-    `Czas trwania: ${context.serviceDurationMinutes} min`,
-    "",
-    "Kontakt do salonu:",
-    ...salonContactLines(),
-  ].join("\n");
 }
 
 export async function sendVerificationEmail(input: { to: string; verificationUrl: string }) {
   await sendEmail({
     to: input.to,
-    subject: "Potwierdz swoj adres email - Patryk Barber",
-    text: [
-      "Dziekujemy za rejestracje w Patryk Barber.",
-      "Kliknij link, aby potwierdzic adres email:",
-      input.verificationUrl,
-      signature(),
-    ].join("\n"),
+    ...verificationEmailTemplate({ verificationUrl: input.verificationUrl }),
   });
 }
 
 export async function sendPasswordResetEmail(input: { to: string; resetUrl: string }) {
   await sendEmail({
     to: input.to,
-    subject: "Reset hasla - Patryk Barber",
-    text: [
-      "Otrzymalismy prosbe o reset hasla.",
-      "Kliknij link, aby ustawic nowe haslo:",
-      input.resetUrl,
-      "Jesli to nie Ty wyslales prosbe, zignoruj te wiadomosc.",
-      signature(),
-    ].join("\n"),
+    ...passwordResetEmailTemplate({ resetUrl: input.resetUrl }),
   });
 }
 
 export async function sendBookingConfirmationEmail(context: BookingEmailContext) {
   await sendEmail({
     to: context.customerEmail,
-    subject: "Potwierdzenie rezerwacji - Patryk Barber",
-    text: [
-      `Czesc ${context.customerName},`,
-      "Twoja rezerwacja zostala potwierdzona.",
-      "",
-      bookingDetails(context),
-      signature(),
-    ].join("\n"),
+    ...bookingConfirmationEmailTemplate(context),
   });
 }
 
 export async function sendBookingCancellationEmail(context: BookingEmailContext) {
   await sendEmail({
     to: context.customerEmail,
-    subject: "Anulowanie rezerwacji - Patryk Barber",
-    text: [
-      `Czesc ${context.customerName},`,
-      "Twoja rezerwacja zostala anulowana.",
-      context.cancelReason ? `Powod: ${context.cancelReason}` : "",
-      "",
-      bookingDetails(context),
-      signature(),
-    ].filter(Boolean).join("\n"),
+    ...bookingCancellationEmailTemplate(context),
   });
 }
 
 export async function sendAdminNewBookingNotification(context: BookingEmailContext) {
   await sendEmail({
     to: adminEmail(),
-    subject: "Nowa rezerwacja - Patryk Barber",
-    text: [
-      "Pojawila sie nowa rezerwacja.",
-      "",
-      `Klient: ${context.customerName}`,
-      `Email klienta: ${context.customerEmail}`,
-      bookingDetails(context),
-      signature(),
-    ].join("\n"),
+    ...adminNewBookingNotificationTemplate(context),
   });
 }
 
 export async function sendAdminBookingCancellationNotification(context: BookingEmailContext) {
   await sendEmail({
     to: adminEmail(),
-    subject: "Anulowana rezerwacja - Patryk Barber",
-    text: [
-      "Klient anulowal rezerwacje.",
-      "",
-      `Klient: ${context.customerName}`,
-      `Email klienta: ${context.customerEmail}`,
-      bookingDetails(context),
-      signature(),
-    ].join("\n"),
+    ...adminBookingCancellationNotificationTemplate(context),
   });
 }
 
 export async function sendAdminMessageToCustomer(input: AdminMessageToCustomerInput) {
   await sendEmail({
     to: input.customerEmail,
-    subject: input.subject,
-    text: [
-      `Czesc ${input.customerName},`,
-      input.message,
-      "",
-      "Kontekst wizyty:",
-      `Data: ${input.date}`,
-      `Godzina: ${input.time}`,
-      `Usluga: ${input.serviceName}`,
-      "",
-      "Kontakt do salonu:",
-      ...salonContactLines(),
-      signature(),
-    ].join("\n"),
+    ...adminMessageToCustomerTemplate(input),
+  });
+}
+
+export async function sendTestEmail(input: { to: string }) {
+  await sendEmail({
+    to: input.to,
+    ...testEmailTemplate({ provider: getEmailProviderName() }),
   });
 }
