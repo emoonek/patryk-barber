@@ -9,46 +9,64 @@ export default async function GalleryPage() {
   const images = await listVisibleGalleryImages();
 
   return (
-    <section className="mx-auto max-w-6xl px-6 py-16">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="mb-3 text-sm uppercase tracking-[0.24em] text-barber-brass">Portfolio</p>
-          <h1 className="text-4xl font-semibold text-barber-cream">Galeria prac</h1>
-          <p className="mt-5 max-w-2xl leading-7 text-barber-muted">
-            Wybrane fryzury, brody i kadry z pracy w salonie. Zdjecia testowe sa tymczasowe i zostana
-            pozniej zastapione prawdziwym portfolio Patryka.
-          </p>
+    <section className="chrome-page-shell px-5 py-14 md:px-10 md:py-24">
+      <div className="mx-auto max-w-7xl">
+        <div className="metallic-divider" />
+        <div className="mt-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver md:tracking-[0.34em]">
+              Portfolio / public gallery
+            </p>
+            <h1 className="mt-5 text-[clamp(2.8rem,10vw,10rem)] font-black uppercase leading-[0.84] text-barber-frost md:leading-[0.82]">
+              Galeria prac.
+            </h1>
+          </div>
+          <div className="technical-border bg-black/36 p-5">
+            <p className="text-lg font-semibold leading-tight text-barber-chrome md:text-xl">
+              Wybrane fryzury, brody i kadry z pracy w salonie. Zdjęcia testowe są tymczasowe i zostaną
+              później zastąpione prawdziwym portfolio Patryka.
+            </p>
+            <Link className="chrome-button mt-6 inline-flex px-5 py-3 text-sm font-black uppercase" href="/rezerwacja">
+              Zarezerwuj termin
+            </Link>
+          </div>
         </div>
-        <Link
-          className="border border-barber-brass bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream"
-          href="/rezerwacja"
-        >
-          Zarezerwuj termin
-        </Link>
-      </div>
 
-      {images.length > 0 ? (
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {images.map((image) => (
-            <figure className="overflow-hidden border border-white/10 bg-black/20" key={image.id}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                alt={image.altText}
-                className="aspect-[4/5] w-full bg-black/30 object-cover"
-                src={image.imageUrl}
-              />
-              <figcaption className="grid gap-2 p-4">
-                <p className="font-medium text-barber-cream">{image.altText}</p>
-                {image.title ? <p className="text-sm leading-6 text-barber-muted">{image.title}</p> : null}
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      ) : (
-        <p className="mt-10 border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
-          Galeria jest jeszcze pusta. Wroc tu wkrotce.
-        </p>
-      )}
+        {images.length > 0 ? (
+          <div className="mt-12 grid auto-rows-[230px] gap-3 sm:grid-cols-2 md:auto-rows-[280px] lg:auto-rows-[340px] lg:grid-cols-4 lg:gap-4">
+            {images.map((image, index) => (
+              <figure
+                className={`group relative overflow-hidden border border-barber-chrome/20 bg-black ${
+                  index % 7 === 0 ? "sm:col-span-2 sm:row-span-2" : ""
+                } ${index % 7 === 3 ? "lg:col-span-2" : ""}`}
+                key={image.id}
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  alt={image.altText}
+                  className="h-full w-full object-cover saturate-0 transition duration-500 group-hover:scale-[1.025] group-hover:saturate-[0.28]"
+                  src={image.imageUrl}
+                />
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/76 to-transparent p-4">
+                  <p className="text-sm font-semibold uppercase tracking-[0.14em] text-barber-frost md:tracking-[0.18em]">
+                    {image.title ?? image.altText}
+                  </p>
+                  <p className="mt-2 text-[0.68rem] uppercase tracking-[0.18em] text-barber-silver md:text-xs md:tracking-[0.22em]">
+                    Pat Barber / precision frame
+                  </p>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        ) : (
+          <div className="document-panel mt-12 p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver">Portfolio w przygotowaniu</p>
+            <p className="mt-4 max-w-xl text-2xl font-semibold leading-tight text-barber-frost">
+              Galeria jest jeszcze pusta. Wkrótce pojawią się tu wybrane prace Patryka.
+            </p>
+          </div>
+        )}
+      </div>
     </section>
   );
 }

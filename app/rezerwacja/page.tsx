@@ -29,91 +29,97 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
   const slots = selectedServiceId ? await getAvailableSlots(selectedServiceId, selectedDate) : [];
 
   return (
-    <section className="mx-auto max-w-5xl px-6 py-16">
-      <p className="mb-3 text-sm uppercase tracking-[0.24em] text-barber-brass">Rezerwacja online</p>
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div>
-          <h1 className="text-4xl font-semibold text-barber-cream">Wybierz usługę i termin</h1>
-          <p className="mt-4 max-w-2xl leading-7 text-barber-muted">
-            Rezerwacje są dostępne dla zalogowanych klientów ze zweryfikowanym adresem email.
-          </p>
-        </div>
-        <Link
-          className="w-fit border border-white/15 px-5 py-3 text-sm font-semibold text-barber-cream transition hover:border-barber-brass"
-          href="/konto"
-        >
-          Moje wizyty
-        </Link>
-      </div>
-
-      {!user.emailVerifiedAt ? (
-        <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
-          Aby zarezerwować wizytę, potwierdź adres email. Link weryfikacyjny wysłaliśmy po rejestracji;
-          w trybie dev jego treść jest widoczna w konsoli serwera.
-          <ResendVerificationForm />
-        </div>
-      ) : null}
-
-      {user.isBlocked ? (
-        <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
-          Twoje konto jest zablokowane, dlatego rezerwacja online jest niedostępna. Powód:{" "}
-          {user.blockedReason ?? "skontaktuj się z salonem, aby poznać szczegóły"}.
-        </div>
-      ) : null}
-
-      <form className="mt-10 grid gap-5 border border-white/10 bg-black/20 p-6 md:grid-cols-[1fr_220px_auto]" method="get">
-        <label className="grid gap-2 text-sm text-barber-muted">
-          Usługa
-          <select
-            className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
-            defaultValue={selectedServiceId}
-            name="serviceId"
-          >
-            {services.map((service) => (
-              <option key={service.id} value={service.id}>
-                {service.name} - {formatMoney(service.priceCents)}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label className="grid gap-2 text-sm text-barber-muted">
-          Data
-          <input
-            className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
-            defaultValue={selectedDate}
-            min={todayInputValue()}
-            name="date"
-            type="date"
-          />
-        </label>
-
-        <button className="self-end bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream">
-          Pokaż sloty
-        </button>
-      </form>
-
-      <div className="mt-8 grid gap-4">
-        {selectedService ? (
-          <div className="border-l border-barber-brass/60 pl-4 text-sm text-barber-muted">
-            <p className="font-medium text-barber-cream">{selectedService.name}</p>
-            <p>
-              {formatMoney(selectedService.priceCents)} · {selectedService.durationMinutes} min
+    <section className="chrome-page-shell px-5 py-14 md:px-10 md:py-20">
+      <div className="mx-auto max-w-5xl">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver">
+          Rezerwacja online
+        </p>
+        <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div>
+            <h1 className="text-[clamp(2.4rem,7vw,4.8rem)] font-black uppercase leading-[0.9] text-barber-frost">
+              Wybierz usługę i termin
+            </h1>
+            <p className="mt-4 max-w-2xl leading-7 text-barber-silver">
+              Rezerwacje są dostępne dla zalogowanych klientów ze zweryfikowanym adresem email.
             </p>
+          </div>
+          <Link className="ghost-button w-fit px-5 py-3 text-sm font-black uppercase" href="/konto">
+            Moje wizyty
+          </Link>
+        </div>
+
+        {!user.emailVerifiedAt ? (
+          <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
+            Aby zarezerwować wizytę, potwierdź adres email. Link weryfikacyjny wysłaliśmy po rejestracji;
+            w trybie dev jego treść jest widoczna w konsoli serwera.
+            <ResendVerificationForm />
           </div>
         ) : null}
 
         {user.isBlocked ? (
-          <div className="border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
-            Rezerwacja online jest niedostępna dla zablokowanego konta.
+          <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
+            Twoje konto jest zablokowane, dlatego rezerwacja online jest niedostępna. Powód:{" "}
+            {user.blockedReason ?? "skontaktuj się z salonem, aby poznać szczegóły"}.
           </div>
-        ) : user.emailVerifiedAt ? (
-          <BookingForm date={selectedDate} serviceId={selectedServiceId ?? ""} slots={slots} />
-        ) : (
-          <div className="border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
-            Sloty pojawią się po weryfikacji emaila.
-          </div>
-        )}
+        ) : null}
+
+        <form
+          className="technical-border mt-10 grid gap-5 bg-black/36 p-5 md:grid-cols-[1fr_220px_auto] md:p-6"
+          method="get"
+        >
+          <label className="grid gap-2 text-sm text-barber-silver">
+            Usługa
+            <select
+              className="border border-barber-chrome/20 bg-[#080b0e] px-4 py-3 text-barber-frost"
+              defaultValue={selectedServiceId}
+              name="serviceId"
+            >
+              {services.map((service) => (
+                <option key={service.id} value={service.id}>
+                  {service.name} - {formatMoney(service.priceCents)}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label className="grid gap-2 text-sm text-barber-silver">
+            Data
+            <input
+              className="border border-barber-chrome/20 bg-[#080b0e] px-4 py-3 text-barber-frost"
+              defaultValue={selectedDate}
+              min={todayInputValue()}
+              name="date"
+              type="date"
+            />
+          </label>
+
+          <button className="chrome-button self-end px-5 py-3 text-sm font-black uppercase">
+            Pokaż sloty
+          </button>
+        </form>
+
+        <div className="mt-8 grid gap-4">
+          {selectedService ? (
+            <div className="border-l border-barber-chrome/40 pl-4 text-sm text-barber-silver">
+              <p className="font-medium text-barber-frost">{selectedService.name}</p>
+              <p>
+                {formatMoney(selectedService.priceCents)} · {selectedService.durationMinutes} min
+              </p>
+            </div>
+          ) : null}
+
+          {user.isBlocked ? (
+            <div className="document-panel p-6 text-sm text-barber-silver">
+              Rezerwacja online jest niedostępna dla zablokowanego konta.
+            </div>
+          ) : user.emailVerifiedAt ? (
+            <BookingForm date={selectedDate} serviceId={selectedServiceId ?? ""} slots={slots} />
+          ) : (
+            <div className="document-panel p-6 text-sm text-barber-silver">
+              Sloty pojawią się po weryfikacji emaila.
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

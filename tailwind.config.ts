@@ -14,6 +14,11 @@ const config: Config = {
           brass: "#c89b3c",
           cream: "#f3ead7",
           muted: "#9a8f7f",
+          graphite: "#111418",
+          steel: "#66717d",
+          chrome: "#d9e2ea",
+          frost: "#f6fbff",
+          silver: "#9aa4ad",
         },
       },
       fontFamily: {

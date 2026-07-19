@@ -19,32 +19,29 @@ export default function RootLayout({
     <html lang="pl">
       <body className="font-sans antialiased">
         <div className="min-h-screen">
-          <header className="border-b border-white/10 bg-black/20">
-            <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-              <Link className="text-lg font-semibold tracking-wide text-barber-cream" href="/">
-                Patryk Barber
+          <header className="sticky top-0 z-50 border-b border-barber-chrome/10 bg-black/78 backdrop-blur-xl">
+            <nav className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-3 sm:flex-row sm:items-center sm:justify-between md:px-10">
+              <Link className="text-base font-black uppercase tracking-wide text-barber-frost md:text-lg" href="/">
+                Pat Barber
               </Link>
-              <div className="flex flex-wrap items-center justify-end gap-4 text-sm text-barber-muted">
-                <Link className="transition hover:text-barber-cream" href="/">
+              <div className="flex flex-wrap items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-barber-silver sm:justify-end md:gap-4 md:text-xs">
+                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/">
                   Strona główna
                 </Link>
-                <Link className="transition hover:text-barber-cream" href="/galeria">
+                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/galeria">
                   Galeria
                 </Link>
-                <Link className="transition hover:text-barber-cream" href="/rezerwacja">
-                  Rezerwacja
-                </Link>
-                <Link className="transition hover:text-barber-cream" href="/kontakt">
+                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/kontakt">
                   Kontakt
                 </Link>
-                <Link className="transition hover:text-barber-cream" href="/regulamin-rezerwacji">
+                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/regulamin-rezerwacji">
                   Regulamin
                 </Link>
-                <Link className="transition hover:text-barber-cream" href="/konto">
-                  Konto
-                </Link>
-                <Link className="transition hover:text-barber-cream" href="/admin">
-                  Admin
+                <Link
+                  className="ml-1 inline-flex min-h-11 items-center border border-barber-chrome/30 bg-barber-frost px-3 py-2 font-black text-barber-black transition hover:bg-barber-chrome md:px-4"
+                  href="/rezerwacja"
+                >
+                  Rezerwacja
                 </Link>
               </div>
             </nav>
