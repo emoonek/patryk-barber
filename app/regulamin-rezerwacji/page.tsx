@@ -13,8 +13,8 @@ export default function BookingTermsPage() {
           Regulamin rezerwacji
         </h1>
         <p className="mt-6 border-l border-barber-chrome/30 pl-4 text-sm leading-6 text-barber-silver">
-          To robocza wersja regulaminu na potrzeby MVP. Przed uruchomieniem produkcyjnym treść powinna zostać
-          zweryfikowana przez właściciela salonu i, jeśli to potrzebne, przez prawnika.
+          Zasady korzystania z rezerwacji online w Patryk Barber. Rezerwuj termin wygodnie przez konto klienta,
+          a w razie pytań skontaktuj się bezpośrednio z salonem.
         </p>
 
         <div className="mt-10 grid gap-8 text-barber-silver">
@@ -30,7 +30,7 @@ export default function BookingTermsPage() {
             <h2 className="text-2xl font-semibold text-barber-frost">2. Płatność</h2>
             <p className="leading-7">
               Aplikacja nie pobiera płatności online. Płatność za usługę odbywa się na miejscu w salonie, zgodnie
-              z aktualnym cennikiem i ustaleniami z barberem.
+              z aktualnym cennikiem.
             </p>
           </section>
 

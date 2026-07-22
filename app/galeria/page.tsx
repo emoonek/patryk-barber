@@ -15,7 +15,7 @@ export default async function GalleryPage() {
         <div className="mt-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver md:tracking-[0.34em]">
-              Portfolio / public gallery
+              Portfolio / galeria prac
             </p>
             <h1 className="mt-5 text-[clamp(2.35rem,7vw,6.2rem)] font-black uppercase leading-[0.9] text-barber-frost">
               Galeria prac.
@@ -51,7 +51,7 @@ export default async function GalleryPage() {
                     {image.title ?? image.altText}
                   </p>
                   <p className="mt-2 text-[0.68rem] uppercase tracking-[0.18em] text-barber-silver md:text-xs md:tracking-[0.22em]">
-                    Pat Barber / precision frame
+                    Pat Barber / portfolio
                   </p>
                 </figcaption>
               </figure>

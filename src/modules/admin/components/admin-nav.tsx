@@ -8,7 +8,6 @@ const adminLinks = [
   { href: "/admin/uslugi", label: "Usługi" },
   { href: "/admin/galeria", label: "Galeria" },
   { href: "/admin/dostepnosc", label: "Dostępność" },
-  { href: "/admin/email-test", label: "Test email" },
 ];
 
 export function AdminNav() {

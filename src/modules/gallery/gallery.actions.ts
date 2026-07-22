@@ -69,7 +69,7 @@ export async function createGalleryImageAction(
 
   if (!imageFile && !parsed.data.imageUrl) {
     return validationError({
-      imageUrl: ["Podaj adres zdjecia albo wybierz plik do uploadu."],
+      imageFile: ["Wybierz plik zdjecia."],
     });
   }
 
@@ -114,7 +114,7 @@ export async function updateGalleryImageAction(
 
   if (!imageFile && !parsed.data.imageUrl) {
     return validationError({
-      imageUrl: ["Podaj adres zdjecia albo wybierz plik do uploadu."],
+      imageFile: ["Wybierz plik zdjecia."],
     });
   }
 

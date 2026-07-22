@@ -75,7 +75,7 @@ Kompletny wzor znajduje sie w `.env.example`. Najwazniejsze grupy:
 Finalne dane publiczne przed deployem:
 
 - Telefon: `513296426`.
-- Adres: `ul. Zwyciestwa 28/4, 11-710 Piecki`.
+- Adres: `ul. Zwycięstwa 28/4, 11-710 Piecki`.
 - Instagram: `@patrykbarber`.
 - Godziny salonu: poniedzialek-piatek 9:00-17:00, sobota 9:00-14:00, niedziela nieczynne.
 - Aktywny cennik po seedzie: Strzyzenie meskie klasyczne 60 PLN; Strzyzenie meskie 70 PLN; Strzyzenie dlugich wlosow 80 PLN; Trymowanie i kontur brody 40 PLN; Combo 110 PLN; Pakiet ojciec + syn 110 PLN.

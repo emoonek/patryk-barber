@@ -161,14 +161,3 @@ export function adminMessageToCustomerTemplate(input: AdminMessageToCustomerInpu
     signature(),
   ]);
 }
-
-export function testEmailTemplate(input: { provider: string }) {
-  return template("Test wysyłki email - Patryk Barber", [
-    "To jest testowa wiadomość transakcyjna z aplikacji Patryk Barber.",
-    `Provider: ${input.provider}`,
-    `APP_URL: ${appUrl()}`,
-    "",
-    "Jeśli widzisz tę wiadomość w skrzynce, konfiguracja wysyłki działa.",
-    signature(),
-  ]);
-}

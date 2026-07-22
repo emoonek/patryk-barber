@@ -22,7 +22,6 @@ type AdminGalleryPageProps = {
 export default async function AdminGalleryPage({ searchParams }: AdminGalleryPageProps) {
   await requireAdmin();
   const params = (await searchParams) ?? {};
-  const showDeveloperOptions = process.env.APP_ENV === "development";
   const cloudinaryStatus = getCloudinaryConfigStatus();
   const [images, editedImage] = await Promise.all([
     listAdminGalleryImages(),
@@ -57,12 +56,12 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
         >
           <p className="font-semibold">
             {cloudinaryStatus.isConfigured
-              ? "Cloudinary skonfigurowane"
-              : "Cloudinary nie jest skonfigurowane - upload plików nie będzie działał"}
+              ? "Upload zdjęć jest aktywny"
+              : "Upload zdjęć jest chwilowo niedostępny"}
           </p>
           {!cloudinaryStatus.isConfigured ? (
             <p className="mt-2 text-xs text-yellow-100/80">
-              Brakuje: {cloudinaryStatus.missingKeys.join(", ")}. Uzupełnij te zmienne w `.env` i uruchom aplikację ponownie.
+              Skontaktuj się z osobą techniczną odpowiedzialną za konfigurację strony.
             </p>
           ) : null}
         </div>
@@ -79,12 +78,10 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
       </div>
 
       <div className="mt-8 overflow-x-auto border border-white/10 bg-black/20">
-        <table className="w-full min-w-[1180px] border-collapse text-left text-sm">
+        <table className="w-full min-w-[860px] border-collapse text-left text-sm">
           <thead className="text-barber-muted">
             <tr className="border-b border-white/10">
               <th className="px-4 py-3 font-medium">Miniatura</th>
-              <th className="px-4 py-3 font-medium">Image URL</th>
-              <th className="px-4 py-3 font-medium">Źródło</th>
               <th className="px-4 py-3 font-medium">Alt text</th>
               <th className="px-4 py-3 font-medium">Caption</th>
               <th className="px-4 py-3 font-medium">Kolejnosc</th>
@@ -102,16 +99,6 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
                     className="h-16 w-16 border border-white/10 object-cover"
                     src={image.thumbnailUrl ?? image.imageUrl}
                   />
-                </td>
-                <td className="max-w-[260px] px-4 py-3 font-mono text-xs text-barber-cream">
-                  {image.imageUrl}
-                </td>
-                <td className="px-4 py-3">
-                  {image.storageKey ? (
-                    <span className="border border-green-300/30 px-2 py-1 text-xs text-green-200">Storage</span>
-                  ) : (
-                    <span className="border border-white/10 px-2 py-1 text-xs text-barber-muted">Ręczny URL</span>
-                  )}
                 </td>
                 <td className="max-w-[220px] px-4 py-3">{image.altText}</td>
                 <td className="max-w-[220px] px-4 py-3">{image.title ?? "-"}</td>
@@ -131,7 +118,7 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
         </table>
         {images.length === 0 ? (
           <p className="p-5 text-sm text-barber-muted">
-            Brak zdjęć galerii. Dodaj zdjęcie z Cloudinary albo tymczasowy URL developerski.
+            Brak zdjęć galerii. Dodaj pierwsze zdjęcie do portfolio.
           </p>
         ) : null}
       </div>
@@ -144,17 +131,17 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
 
       {editedImage ? (
         <div className="mt-8" id="edytuj-zdjecie">
-          <GalleryAdminForm image={editedImage} mode="edit" showDeveloperOptions={showDeveloperOptions} />
+          <GalleryAdminForm image={editedImage} mode="edit" />
         </div>
       ) : null}
 
       <div className="mt-8" id="dodaj-zdjecie">
-        <GalleryAdminForm mode="create" showDeveloperOptions={showDeveloperOptions} />
+        <GalleryAdminForm mode="create" />
       </div>
 
       <div className="mt-8 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
-        Upload plików korzysta z warstwy storage przygotowanej pod Cloudinary. W development nadal można
-        wpisać imageUrl ręcznie, np. do zdjęć z katalogu public/ig.
+        Upload zdjęć korzysta z Cloudinary. Po dodaniu zdjęcia możesz od razu ustawić jego opis,
+        podpis, kolejność i widoczność w galerii.
       </div>
     </section>
   );

@@ -10,7 +10,6 @@ import { GalleryActionMessage } from "./gallery-action-message";
 
 type GalleryAdminFormProps = {
   mode: "create" | "edit";
-  showDeveloperOptions: boolean;
   image?: {
     id: string;
     title: string | null;
@@ -23,7 +22,7 @@ type GalleryAdminFormProps = {
 
 const initialState: GalleryActionState = {};
 
-export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryAdminFormProps) {
+export function GalleryAdminForm({ mode, image }: GalleryAdminFormProps) {
   const action = mode === "create" ? createGalleryImageAction : updateGalleryImageAction;
   const [state, formAction, pending] = useActionState(action, initialState);
   const [previewUrl, setPreviewUrl] = useState(image?.imageUrl ?? "");
@@ -84,32 +83,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
         </label>
       </div>
 
-      {showDeveloperOptions ? (
-        <details className="border border-white/10 bg-[#120f0d] p-4 text-sm text-barber-muted">
-          <summary className="cursor-pointer font-semibold text-barber-cream">
-            Opcje developerskie / testowe
-          </summary>
-          <div className="mt-4 grid gap-3">
-            <p>
-              To pole służy tylko do lokalnych zdjęć z public/ig, gdy Cloudinary nie jest
-              skonfigurowane.
-            </p>
-            <label className="grid gap-2">
-              Image URL
-              <input
-                className="border border-white/10 bg-black/30 px-4 py-3 text-barber-cream"
-                defaultValue={image?.imageUrl ?? ""}
-                name="imageUrl"
-                onChange={(event) => setPreviewUrl(event.currentTarget.value)}
-                placeholder="/ig/nazwa-pliku.png"
-              />
-            </label>
-            {state.errors?.imageUrl ? <span className="text-red-300">{state.errors.imageUrl[0]}</span> : null}
-          </div>
-        </details>
-      ) : (
-        <input name="imageUrl" type="hidden" value={image?.imageUrl ?? ""} />
-      )}
+      <input name="imageUrl" type="hidden" value={image?.imageUrl ?? ""} />
 
       <label className="grid gap-2 text-sm text-barber-muted">
         Alt text

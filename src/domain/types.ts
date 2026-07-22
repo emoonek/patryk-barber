@@ -19,8 +19,8 @@ export const BUSINESS_PROFILE = {
   facebookUrl: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "https://www.facebook.com/share/1aHRhwbUhK/?mibextid=wwXIfr",
   googleMapsUrl: process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL ?? "https://maps.app.goo.gl/HEG3UCfGwXtCRJk58",
   openingHours: [
-    "Poniedziałek-piątek: 9:00-17:00",
-    "Sobota: 9:00-14:00",
+    "Poniedziałek–piątek: 9:00–17:00",
+    "Sobota: 9:00–14:00",
     "Niedziela: nieczynne",
   ],
 } as const;

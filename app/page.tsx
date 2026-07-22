@@ -138,7 +138,7 @@ export default async function HomePage() {
         <div className="mx-auto max-w-7xl">
           <div className="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver md:tracking-[0.34em]">Usługi / active database</p>
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver md:tracking-[0.34em]">Usługi / cennik</p>
               <h2 className="mt-5 text-[clamp(2.1rem,6vw,5.25rem)] font-black uppercase leading-[0.92] text-barber-frost">
                 Cennik premium.
               </h2>
@@ -160,7 +160,7 @@ export default async function HomePage() {
                       {service.name}
                     </h3>
                     <p className="mt-2 max-w-2xl text-xs uppercase tracking-[0.16em] text-barber-silver md:text-sm">
-                      {service.description ?? `${service.durationMinutes} min / precision service`}
+                      {service.description ?? `${service.durationMinutes} min / precyzyjna usługa`}
                     </p>
                   </div>
                   <p className="text-left text-[clamp(1.35rem,3vw,2.65rem)] font-black text-barber-chrome md:text-right">

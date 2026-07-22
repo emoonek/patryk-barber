@@ -13,15 +13,15 @@ export default function PrivacyPolicyPage() {
           Polityka prywatności
         </h1>
         <p className="mt-6 border-l border-barber-chrome/30 pl-4 text-sm leading-6 text-barber-silver">
-          To prosta wersja polityki prywatności na potrzeby MVP. Przed wdrożeniem produkcyjnym finalna treść
-          powinna zostać zweryfikowana przez właściciela salonu i, jeśli to potrzebne, przez prawnika.
+          Poniżej znajdziesz najważniejsze informacje o tym, jakie dane są przetwarzane podczas korzystania
+          z konta klienta i rezerwacji online w Patryk Barber.
         </p>
 
         <div className="mt-10 grid gap-8 text-barber-silver">
           <section className="grid gap-3">
             <h2 className="text-2xl font-semibold text-barber-frost">1. Administrator danych</h2>
             <div className="leading-7">
-              <p>Administratorem danych w ramach MVP jest {BUSINESS_PROFILE.name}.</p>
+              <p>Administratorem danych jest {BUSINESS_PROFILE.name}.</p>
               <p>Adres: {BUSINESS_PROFILE.address}</p>
               <p>Email kontaktowy: {BUSINESS_PROFILE.email}</p>
               <p>Telefon: {BUSINESS_PROFILE.phone}</p>
@@ -40,7 +40,7 @@ export default function PrivacyPolicyPage() {
             <h2 className="text-2xl font-semibold text-barber-frost">3. Cel przetwarzania</h2>
             <p className="leading-7">
               Dane są wykorzystywane do obsługi konta klienta, tworzenia i zarządzania rezerwacjami, kontaktu
-              w sprawie wizyt oraz podstawowej obsługi salonu.
+              w sprawie wizyt, wysyłania wiadomości transakcyjnych oraz podstawowej obsługi salonu.
             </p>
           </section>
 
@@ -55,8 +55,16 @@ export default function PrivacyPolicyPage() {
           <section className="grid gap-3">
             <h2 className="text-2xl font-semibold text-barber-frost">5. Płatności</h2>
             <p className="leading-7">
-              MVP nie obsługuje płatności online i nie przetwarza danych kart płatniczych. Płatność odbywa się
+              Aplikacja nie obsługuje płatności online i nie przetwarza danych kart płatniczych. Płatność odbywa się
               na miejscu w salonie.
+            </p>
+          </section>
+
+          <section className="grid gap-3">
+            <h2 className="text-2xl font-semibold text-barber-frost">6. Zdjęcia galerii</h2>
+            <p className="leading-7">
+              Zdjęcia publikowane w galerii mogą być przechowywane i dostarczane z wykorzystaniem Cloudinary.
+              Dane kont klientów i rezerwacji nie są wykorzystywane do obsługi płatności online.
             </p>
           </section>
         </div>

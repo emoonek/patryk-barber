@@ -37,7 +37,6 @@ export function CinematicVideoHero({ fallbackImage, src }: CinematicVideoHeroPro
         />
       ) : null}
       {playVideo ? (
-        /* Placeholder Pika video. Replace with Patryk's dedicated hero film when delivered. */
         <video
           aria-hidden="true"
           autoPlay

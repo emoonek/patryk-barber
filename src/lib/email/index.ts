@@ -5,7 +5,6 @@ import {
   bookingCancellationEmailTemplate,
   bookingConfirmationEmailTemplate,
   passwordResetEmailTemplate,
-  testEmailTemplate,
   verificationEmailTemplate,
   htmlFromText,
   type AdminMessageToCustomerInput,
@@ -273,12 +272,5 @@ export async function sendAdminMessageToCustomer(input: AdminMessageToCustomerIn
   await sendEmail({
     to: input.customerEmail,
     ...adminMessageToCustomerTemplate(input),
-  });
-}
-
-export async function sendTestEmail(input: { to: string }) {
-  await sendEmail({
-    to: input.to,
-    ...testEmailTemplate({ provider: getEmailProviderName() }),
   });
 }

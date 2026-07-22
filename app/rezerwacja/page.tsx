@@ -50,8 +50,8 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
 
         {!user.emailVerifiedAt ? (
           <div className="mt-8 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
-            Aby zarezerwować wizytę, potwierdź adres email. Link weryfikacyjny wysłaliśmy po rejestracji;
-            w trybie dev jego treść jest widoczna w konsoli serwera.
+            Aby zarezerwować wizytę, potwierdź adres email. Link weryfikacyjny wysłaliśmy po rejestracji.
+            Jeśli wiadomość nie dotarła, możesz wysłać link ponownie.
             <ResendVerificationForm />
           </div>
         ) : null}

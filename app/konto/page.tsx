@@ -23,11 +23,11 @@ export default async function AccountPage() {
         Jesteś zalogowany jako {user.firstName} {user.lastName} ({user.email}).
       </p>
       <div className="mt-8 grid gap-3 border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
-        <p>Rola: {user.role}</p>
+        <p>Dane konta</p>
         <p>
           Email:{" "}
           {user.emailVerifiedAt
-            ? `zweryfikowany ${user.emailVerifiedAt.toLocaleDateString("pl-PL")}`
+            ? `potwierdzony ${user.emailVerifiedAt.toLocaleDateString("pl-PL")}`
             : "oczekuje na weryfikację"}
         </p>
       </div>
@@ -40,7 +40,7 @@ export default async function AccountPage() {
       {!user.emailVerifiedAt ? (
         <div className="mt-6 border border-red-300/30 bg-red-950/20 p-6 text-sm leading-6 text-red-100">
           Potwierdź adres email, aby móc rezerwować wizyty online. Link weryfikacyjny wysłaliśmy po
-          rejestracji; w trybie dev jego treść jest widoczna w konsoli serwera.
+          rejestracji. Jeśli wiadomość nie dotarła, możesz wysłać link ponownie.
           <ResendVerificationForm />
         </div>
       ) : null}
