@@ -13,44 +13,44 @@ export function RegisterForm() {
   return (
     <form action={formAction} className="mt-8 grid gap-4">
       <div className="grid gap-2 md:grid-cols-2">
-        <label className="grid gap-2 text-sm text-barber-muted">
+        <label className="grid gap-2 text-sm text-barber-silver">
           Imię
-          <input className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream" name="firstName" />
+          <input className="frost-input px-4 py-3" name="firstName" />
           <AuthFieldError errors={state.errors?.firstName} />
         </label>
-        <label className="grid gap-2 text-sm text-barber-muted">
+        <label className="grid gap-2 text-sm text-barber-silver">
           Nazwisko
-          <input className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream" name="lastName" />
+          <input className="frost-input px-4 py-3" name="lastName" />
           <AuthFieldError errors={state.errors?.lastName} />
         </label>
       </div>
 
-      <label className="grid gap-2 text-sm text-barber-muted">
+      <label className="grid gap-2 text-sm text-barber-silver">
         Email
-        <input className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream" name="email" type="email" />
+        <input className="frost-input px-4 py-3" name="email" type="email" />
         <AuthFieldError errors={state.errors?.email} />
       </label>
 
-      <label className="grid gap-2 text-sm text-barber-muted">
+      <label className="grid gap-2 text-sm text-barber-silver">
         Telefon opcjonalnie
-        <input className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream" name="phone" />
+        <input className="frost-input px-4 py-3" name="phone" />
         <AuthFieldError errors={state.errors?.phone} />
       </label>
 
       <div className="grid gap-2 md:grid-cols-2">
-        <label className="grid gap-2 text-sm text-barber-muted">
+        <label className="grid gap-2 text-sm text-barber-silver">
           Hasło
           <input
-            className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream"
+            className="frost-input px-4 py-3"
             name="password"
             type="password"
           />
           <AuthFieldError errors={state.errors?.password} />
         </label>
-        <label className="grid gap-2 text-sm text-barber-muted">
+        <label className="grid gap-2 text-sm text-barber-silver">
           Powtórz hasło
           <input
-            className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream"
+            className="frost-input px-4 py-3"
             name="confirmPassword"
             type="password"
           />
@@ -58,15 +58,15 @@ export function RegisterForm() {
         </label>
       </div>
 
-      <label className="flex items-start gap-3 text-sm leading-6 text-barber-muted">
+      <label className="flex items-start gap-3 text-sm leading-6 text-barber-silver">
         <input className="mt-1" name="termsAccepted" type="checkbox" />
         <span>
           Akceptuję{" "}
-          <Link className="text-barber-brass hover:text-barber-cream" href="/regulamin-rezerwacji">
+          <Link className="frost-link" href="/regulamin-rezerwacji">
             regulamin rezerwacji
           </Link>{" "}
           oraz{" "}
-          <Link className="text-barber-brass hover:text-barber-cream" href="/polityka-prywatnosci">
+          <Link className="frost-link" href="/polityka-prywatnosci">
             politykę prywatności
           </Link>
           .
@@ -79,7 +79,7 @@ export function RegisterForm() {
       ) : null}
 
       <button
-        className="bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream disabled:opacity-60"
+        className="chrome-button px-5 py-3 text-sm font-black uppercase disabled:opacity-60"
         disabled={pending}
         type="submit"
       >

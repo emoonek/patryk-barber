@@ -16,7 +16,8 @@ const contactItems = [
 
 export default function ContactPage() {
   return (
-    <section className="chrome-page-shell px-5 py-14 md:px-10 md:py-24">
+    <section className="chrome-page-shell relative overflow-hidden px-5 py-14 md:px-10 md:py-24">
+      <div className="pointer-events-none absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(217,226,234,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(217,226,234,0.06)_1px,transparent_1px)] [background-size:72px_72px]" />
       <div className="mx-auto max-w-6xl">
         <div className="metallic-divider" />
         <div className="mt-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
@@ -24,11 +25,11 @@ export default function ContactPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver md:tracking-[0.34em]">
               Kontakt / Piecki
             </p>
-            <h1 className="mt-5 text-[clamp(3rem,10vw,8.5rem)] font-black uppercase leading-[0.84] text-barber-frost">
+            <h1 className="mt-5 text-[clamp(2.45rem,7vw,6rem)] font-black uppercase leading-[0.9] text-barber-frost">
               Pat Barber.
             </h1>
           </div>
-          <div className="technical-border bg-black/36 p-5">
+          <div className="frosted-panel p-5">
             <p className="text-lg font-semibold leading-tight text-barber-chrome md:text-2xl">
               Pytanie o wizytę, termin albo usługę? Najszybciej złapiesz salon telefonicznie albo przez social media.
             </p>
@@ -40,7 +41,7 @@ export default function ContactPage() {
 
         <div className="mt-12 grid gap-3 md:grid-cols-2">
           {contactItems.map((item) => (
-            <div className="document-panel p-5" key={item.label}>
+            <div className="frosted-panel p-5" key={item.label}>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-barber-silver">{item.label}</p>
               <p className="mt-3 text-xl font-semibold leading-tight text-barber-frost">{item.value}</p>
             </div>

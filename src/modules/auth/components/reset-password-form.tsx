@@ -14,20 +14,20 @@ export function ResetPasswordForm({ token }: { token: string }) {
     <form action={formAction} className="mt-8 grid gap-4">
       <input name="token" type="hidden" value={token} />
 
-      <label className="grid gap-2 text-sm text-barber-muted">
+      <label className="grid gap-2 text-sm text-barber-silver">
         Nowe hasło
         <input
-          className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream"
+          className="frost-input px-4 py-3"
           name="password"
           type="password"
         />
         <AuthFieldError errors={state.errors?.password} />
       </label>
 
-      <label className="grid gap-2 text-sm text-barber-muted">
+      <label className="grid gap-2 text-sm text-barber-silver">
         Powtórz nowe hasło
         <input
-          className="border border-white/10 bg-white/5 px-4 py-3 text-barber-cream"
+          className="frost-input px-4 py-3"
           name="confirmPassword"
           type="password"
         />
@@ -39,12 +39,12 @@ export function ResetPasswordForm({ token }: { token: string }) {
       ) : null}
 
       {state.ok ? (
-        <Link className="text-sm text-barber-brass transition hover:text-barber-cream" href="/logowanie">
+        <Link className="frost-link text-sm" href="/logowanie">
           Przejdź do logowania
         </Link>
       ) : (
         <button
-          className="bg-barber-brass px-5 py-3 text-sm font-semibold text-black transition hover:bg-barber-cream disabled:opacity-60"
+          className="chrome-button px-5 py-3 text-sm font-black uppercase disabled:opacity-60"
           disabled={pending}
           type="submit"
         >

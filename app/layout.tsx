@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="pl">
       <body className="font-sans antialiased">
         <div className="min-h-screen">
-          <header className="sticky top-0 z-50 border-b border-barber-chrome/10 bg-black/78 backdrop-blur-xl">
+          <header className="sticky top-0 z-50 border-b border-barber-chrome/14 bg-[#030507]/72 shadow-[0_18px_60px_rgba(0,0,0,0.28)] backdrop-blur-2xl">
             <nav className="mx-auto flex max-w-7xl flex-col gap-3 px-5 py-3 sm:flex-row sm:items-center sm:justify-between md:px-10">
               <Link className="text-base font-black uppercase tracking-wide text-barber-frost md:text-lg" href="/">
                 Pat Barber
@@ -38,7 +38,7 @@ export default function RootLayout({
                   Regulamin
                 </Link>
                 <Link
-                  className="ml-1 inline-flex min-h-11 items-center border border-barber-chrome/30 bg-barber-frost px-3 py-2 font-black text-barber-black transition hover:bg-barber-chrome md:px-4"
+                  className="chrome-button ml-1 min-h-11 px-3 py-2 font-black md:px-4"
                   href="/rezerwacja"
                 >
                   Rezerwacja

@@ -17,11 +17,11 @@ export default async function GalleryPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.28em] text-barber-silver md:tracking-[0.34em]">
               Portfolio / public gallery
             </p>
-            <h1 className="mt-5 text-[clamp(2.8rem,10vw,10rem)] font-black uppercase leading-[0.84] text-barber-frost md:leading-[0.82]">
+            <h1 className="mt-5 text-[clamp(2.35rem,7vw,6.2rem)] font-black uppercase leading-[0.9] text-barber-frost">
               Galeria prac.
             </h1>
           </div>
-          <div className="technical-border bg-black/36 p-5">
+          <div className="frosted-panel p-5">
             <p className="text-lg font-semibold leading-tight text-barber-chrome md:text-xl">
               Wybrane fryzury, brody i kadry z pracy w salonie. Zdjęcia testowe są tymczasowe i zostaną
               później zastąpione prawdziwym portfolio Patryka.
@@ -33,10 +33,10 @@ export default async function GalleryPage() {
         </div>
 
         {images.length > 0 ? (
-          <div className="mt-12 grid auto-rows-[230px] gap-3 sm:grid-cols-2 md:auto-rows-[280px] lg:auto-rows-[340px] lg:grid-cols-4 lg:gap-4">
+          <div className="mt-12 grid auto-rows-[230px] gap-4 sm:grid-cols-2 md:auto-rows-[280px] lg:auto-rows-[340px] lg:grid-cols-4">
             {images.map((image, index) => (
               <figure
-                className={`group relative overflow-hidden border border-barber-chrome/20 bg-black ${
+                className={`group chrome-frame relative overflow-hidden bg-black ${
                   index % 7 === 0 ? "sm:col-span-2 sm:row-span-2" : ""
                 } ${index % 7 === 3 ? "lg:col-span-2" : ""}`}
                 key={image.id}
@@ -44,10 +44,10 @@ export default async function GalleryPage() {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   alt={image.altText}
-                  className="h-full w-full object-cover saturate-0 transition duration-500 group-hover:scale-[1.025] group-hover:saturate-[0.28]"
+                  className="h-full w-full object-cover saturate-[0.78] transition duration-500 group-hover:scale-[1.025] group-hover:saturate-100"
                   src={image.imageUrl}
                 />
-                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/76 to-transparent p-4">
+                <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/72 to-transparent p-4">
                   <p className="text-sm font-semibold uppercase tracking-[0.14em] text-barber-frost md:tracking-[0.18em]">
                     {image.title ?? image.altText}
                   </p>
