@@ -1,202 +1,139 @@
 # Patryk Barber
 
-Aplikacja MVP dla salonu Patryk Barber: publiczna strona, konta klientów, rezerwacje online, panel admina, galeria i maile transakcyjne. Płatności online nie są częścią MVP. Klient płaci na miejscu w salonie.
+Aplikacja MVP dla salonu Patryk Barber: publiczna strona, konta klientow, rezerwacje online, panel admina, galeria, Cloudinary i maile transakcyjne. Platnosci online oraz SMS nie sa czescia MVP.
 
 ## Stack
 
-- Next.js App Router
-- TypeScript
-- PostgreSQL
-- Prisma
+- Next.js App Router + TypeScript
+- PostgreSQL + Prisma
 - Tailwind CSS
 - Zod
 - bcryptjs
-- Resend / SMTP / console email provider
+- Cloudinary
+- Email provider: console, Resend albo SMTP
 
-## Wymagane zmienne `.env`
-
-Aktualny komplet zmiennych znajduje się w `.env.example`:
-
-```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
-DIRECT_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
-APP_URL="http://localhost:3000"
-APP_ENV="development"
-SESSION_SECRET="replace-with-long-random-secret"
-PASSWORD_PEPPER="replace-with-long-random-pepper"
-ADMIN_EMAIL="spontan2wz@gmail.com"
-ADMIN_INITIAL_PASSWORD="change-me-before-seed"
-EMAIL_PROVIDER="console"
-RESEND_API_KEY=""
-MAIL_FROM="Patryk Barber <noreply@example.com>"
-SMTP_HOST=""
-SMTP_PORT="587"
-SMTP_USER=""
-SMTP_PASSWORD=""
-CLOUDINARY_CLOUD_NAME=""
-CLOUDINARY_API_KEY=""
-CLOUDINARY_API_SECRET=""
-CLOUDINARY_FOLDER="patbarber/gallery"
-NEXT_PUBLIC_BUSINESS_NAME="Patryk Barber"
-NEXT_PUBLIC_BUSINESS_ADDRESS="Ul. Zwycięstwa 28, 11-710 Piecki"
-NEXT_PUBLIC_BUSINESS_PHONE="+48 575 088 360"
-NEXT_PUBLIC_BUSINESS_EMAIL="spontan2wz@gmail.com"
-NEXT_PUBLIC_INSTAGRAM_HANDLE="@patrykbarber"
-NEXT_PUBLIC_FACEBOOK_NAME="Patryk Barber"
-```
-
-Pliku `.env` nie wolno commitować. Prawdziwe sekrety powinny być tylko lokalnie i w konfiguracji środowiska produkcyjnego.
-
-## Uruchomienie lokalne
-
-1. Zainstaluj zależności:
+## Local setup
 
 ```bash
 npm install
-```
-
-2. Skopiuj konfigurację:
-
-```bash
 cp .env.example .env
 ```
 
-3. Uzupełnij `.env`, szczególnie `SESSION_SECRET`, `PASSWORD_PEPPER`, `ADMIN_EMAIL` i `ADMIN_INITIAL_PASSWORD`.
+Uzupelnij lokalny `.env`. Pliku `.env` nie wolno commitowac ani pokazywac w logach lub UI. Prawdziwe sekrety trzymaj tylko lokalnie i w konfiguracji srodowiska produkcyjnego.
 
-4. Uruchom aplikację:
+## Docker PostgreSQL
 
-```bash
-npm run dev
-```
-
-Aplikacja będzie dostępna pod `http://localhost:3000`.
-
-## Docker/Postgres
-
-Jeśli nie masz lokalnej bazy PostgreSQL, uruchom ją przez Docker:
+Jesli nie masz lokalnego PostgreSQL:
 
 ```bash
 docker run --name patbarber-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=patbarber -p 5432:5432 -d postgres:16
 ```
 
-Jeśli kontener już istnieje:
+Jesli kontener juz istnieje:
 
 ```bash
 docker start patbarber-postgres
 ```
 
-`DATABASE_URL` i `DIRECT_URL` powinny wskazywać na tę bazę.
+Domyslne lokalne adresy z `.env.example`:
 
-## Migracje
+```env
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
+DIRECT_URL="postgresql://postgres:postgres@localhost:5432/patbarber?schema=public"
+```
 
-Po uruchomieniu bazy:
+## Prisma migrate/seed
 
 ```bash
 npm run prisma:generate
 npm run prisma:validate
 npm run prisma:migrate
-```
-
-## Seed
-
-Seed tworzy konto admina i podstawowe dane:
-
-```bash
 npm run db:seed
 ```
 
-Hasło startowe admina pochodzi z `ADMIN_INITIAL_PASSWORD`. Przed produkcją trzeba je zmienić.
+Seed tworzy konto admina, finalne uslugi z plakatu, godziny pracy i galerie z `public/ig`. Haslo startowe admina pochodzi z `ADMIN_INITIAL_PASSWORD`. W production musi byc mocne i trzeba je zmienic po pierwszym logowaniu.
 
-## Maile transakcyjne
+## Dev server
 
-Email service obsługuje:
+```bash
+npm run dev
+```
 
-- weryfikację adresu email,
-- ponowne wysłanie linku weryfikacyjnego,
-- reset hasła,
-- potwierdzenie i anulowanie rezerwacji,
-- powiadomienia admina,
-- wiadomości admina do klienta,
-- testowego maila z panelu admina.
+Aplikacja lokalnie dziala pod `http://localhost:3000`.
 
-Provider wybiera zmienna `EMAIL_PROVIDER`:
+## Env
 
-- `console` - developmentowy fallback, wypisuje treść maila i linki w konsoli procesu `npm run dev`,
-- `resend` - główny provider produkcyjny,
-- `smtp` - opcjonalny fallback techniczny przez SMTP/nodemailer.
+Kompletny wzor znajduje sie w `.env.example`. Najwazniejsze grupy:
 
-W development można używać `EMAIL_PROVIDER="console"`. W production `EMAIL_PROVIDER="console"` jest blokowany. Dla `EMAIL_PROVIDER="resend"` wymagane są `RESEND_API_KEY` i `MAIL_FROM`. Dla `EMAIL_PROVIDER="smtp"` wymagane są `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD` i `MAIL_FROM`.
+- App/database: `DATABASE_URL`, `DIRECT_URL`, `APP_URL`, `APP_ENV`.
+- Security: `SESSION_SECRET`, `PASSWORD_PEPPER`.
+- Admin seed: `ADMIN_EMAIL`, `ADMIN_INITIAL_PASSWORD`.
+- Email: `EMAIL_PROVIDER`, `RESEND_API_KEY`, `MAIL_FROM`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`.
+- Cloudinary: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, `CLOUDINARY_FOLDER`.
+- Public business data: `NEXT_PUBLIC_BUSINESS_NAME`, `NEXT_PUBLIC_BUSINESS_ADDRESS`, `NEXT_PUBLIC_BUSINESS_PHONE`, `NEXT_PUBLIC_BUSINESS_EMAIL`, `NEXT_PUBLIC_INSTAGRAM_HANDLE`, `NEXT_PUBLIC_INSTAGRAM_URL`, `NEXT_PUBLIC_FACEBOOK_NAME`, `NEXT_PUBLIC_FACEBOOK_URL`, `NEXT_PUBLIC_GOOGLE_MAPS_URL`.
 
-### Konfiguracja Resend
+Finalne dane publiczne przed deployem:
 
-1. Załóż konto na [resend.com](https://resend.com).
-2. W panelu Resend przejdź do sekcji API Keys.
-3. Utwórz API key dla aplikacji i wklej go do `RESEND_API_KEY`.
-4. Ustaw `EMAIL_PROVIDER="resend"`.
-5. Ustaw `MAIL_FROM`, np. `Patryk Barber <noreply@twojadomena.pl>`.
-6. Ustaw poprawne `APP_URL`, bo linki weryfikacji i resetu hasła korzystają z tej zmiennej.
-7. Do produkcyjnej wysyłki do klientów potrzebna będzie zweryfikowana domena w Resend. Bez tego wysyłka może działać tylko w ograniczonym trybie testowym.
+- Telefon: `513296426`.
+- Adres: `ul. Zwyciestwa 28/4, 11-710 Piecki`.
+- Instagram: `@patrykbarber`.
+- Godziny salonu: poniedzialek-piatek 9:00-17:00, sobota 9:00-14:00, niedziela nieczynne.
+- Aktywny cennik po seedzie: Strzyzenie meskie klasyczne 60 PLN; Strzyzenie meskie 70 PLN; Strzyzenie dlugich wlosow 80 PLN; Trymowanie i kontur brody 40 PLN; Combo 110 PLN; Pakiet ojciec + syn 110 PLN.
 
-Po zmianie `.env` uruchom aplikację ponownie, żeby Next.js wczytał nowe zmienne.
+Production safety:
 
-### Test maila
-
-1. Zaloguj się jako admin.
-2. Wejdź na `/admin/email-test`.
-3. Zostaw odbiorcę pustego, żeby wysłać test na `ADMIN_EMAIL`, albo wpisz własny adres.
-4. Kliknij `Wyślij test`.
-5. Panel pokaże wynik: wysłano, błąd konfiguracji albo błąd providera.
-
-Sekrety nie są pokazywane w UI. `RESEND_API_KEY` jest używany tylko po stronie serwera i nie jest logowany.
+- `EMAIL_PROVIDER="console"` jest dozwolony tylko poza production.
+- `EMAIL_PROVIDER="resend"` wymaga `RESEND_API_KEY` i `MAIL_FROM`.
+- `SESSION_SECRET` i `PASSWORD_PEPPER` powinny miec co najmniej 32 losowe znaki.
+- Sekrety nie powinny byc logowane ani wyswietlane w UI.
 
 ## Cloudinary
 
-Panel `/admin/galeria` obsługuje upload JPG, PNG i WebP do Cloudinary oraz ręczny `imageUrl` jako fallback developerski.
+Panel `/admin/galeria` obsluguje upload JPG, PNG i WebP do Cloudinary oraz reczny `imageUrl` jako fallback developerski.
 
 Wymagane zmienne:
 
 ```env
-CLOUDINARY_CLOUD_NAME="twoj-cloud-name"
-CLOUDINARY_API_KEY="twoj-api-key"
-CLOUDINARY_API_SECRET="twoj-api-secret"
+CLOUDINARY_CLOUD_NAME=""
+CLOUDINARY_API_KEY=""
+CLOUDINARY_API_SECRET=""
 CLOUDINARY_FOLDER="patbarber/gallery"
 ```
 
-Gdzie znaleźć wartości w Cloudinary:
+Test lokalny:
 
-1. Zaloguj się do Cloudinary.
-2. Wejdź w `Dashboard`.
-3. Skopiuj `Cloud name` do `CLOUDINARY_CLOUD_NAME`.
-4. Skopiuj `API Key` do `CLOUDINARY_API_KEY`.
-5. Skopiuj `API Secret` do `CLOUDINARY_API_SECRET`.
-6. W `CLOUDINARY_FOLDER` wpisz folder dla galerii, np. `patbarber/gallery`.
+1. Uzupelnij `CLOUDINARY_*` w `.env`.
+2. Uruchom ponownie dev server.
+3. Wejdz na `/admin/galeria`.
+4. Sprawdz status konfiguracji.
+5. Dodaj zdjecie do 5 MB i potwierdz, ze pojawia sie na `/galeria`.
 
-Test uploadu lokalnie:
+## Email provider
 
-1. Uzupełnij zmienne `CLOUDINARY_*` w `.env`.
-2. Uruchom aplikację ponownie.
-3. Wejdź na `http://localhost:3000/admin/galeria`.
-4. Sprawdź, czy panel pokazuje status `Cloudinary skonfigurowane`.
-5. Wybierz plik JPG, PNG albo WebP do 5 MB.
-6. Uzupełnij opis w `Alt text` albo `Caption`.
-7. Kliknij `Dodaj zdjęcie`.
-8. Sprawdź, czy nowe zdjęcie ma źródło `Storage` i pojawia się na `/galeria`.
+`EMAIL_PROVIDER` moze miec wartosc:
 
-## Bezpieczeństwo MVP
+- `console` - tylko development; wypisuje tresc maila w konsoli procesu.
+- `resend` - rekomendowany provider produkcyjny.
+- `smtp` - techniczny fallback przez SMTP/nodemailer.
 
-- Hasła są hashowane przez `bcryptjs` z dodatkowym `PASSWORD_PEPPER`.
-- Sesja jest podpisywana i trzymana w ciasteczku `httpOnly`.
-- Rezerwacje wymagają konta i zweryfikowanego adresu email.
-- Klient zablokowany może się zalogować, ale nie może tworzyć nowych rezerwacji.
-- Limit aktywnych przyszłych rezerwacji klienta wynosi 3.
-- Logowanie, rejestracja, reset hasła, ponowna weryfikacja emaila i tworzenie rezerwacji mają prosty rate limiting po stronie serwera.
-- Rate limiting jest in-memory dla MVP/development. Produkcyjnie warto użyć Redis albo Upstash, szczególnie przy wielu instancjach aplikacji.
-- Błędy wysyłki maili rezerwacyjnych są logowane, ale nie cofają zapisu rezerwacji.
-- Błędy providerów email nie są pokazywane klientom z detalami technicznymi.
+Dla Resend ustaw:
 
-## Dokumenty prawne MVP
+```env
+EMAIL_PROVIDER="resend"
+RESEND_API_KEY=""
+MAIL_FROM="Patryk Barber <noreply@twojadomena.pl>"
+APP_URL="https://twojadomena.pl"
+```
 
-Strony `/regulamin-rezerwacji` i `/polityka-prywatnosci` są roboczymi wersjami dla MVP. Finalna treść regulaminu i polityki prywatności powinna zostać zweryfikowana przed produkcją przez właściciela salonu i, jeśli to potrzebne, przez prawnika.
+Do produkcyjnej wysylki potrzebna jest zweryfikowana domena w Resend.
+
+## Test maili
+
+1. Zaloguj sie jako admin.
+2. Wejdz na `/admin/email-test`.
+3. Zostaw odbiorce pustego, aby uzyc `ADMIN_EMAIL`, albo wpisz adres testowy.
+4. Kliknij wysylke testowa.
+5. Sprawdz komunikat w panelu i log providera.
 
 ## Przydatne komendy
 
@@ -204,23 +141,15 @@ Strony `/regulamin-rezerwacji` i `/polityka-prywatnosci` są roboczymi wersjami 
 npm run typecheck
 npm run lint
 npm run build
+npm run verify
 npm run prisma:studio
 ```
 
-## Deployment checklist
+`npm run verify` uruchamia typecheck, lint i build.
 
-- Ustaw prawdziwą produkcyjną bazę danych.
-- Ustaw silne `SESSION_SECRET` i `PASSWORD_PEPPER`.
-- Skonfiguruj `EMAIL_PROVIDER="resend"` i zweryfikowaną domenę w Resend.
-- Uzupełnij zmienne Cloudinary.
-- Zmień hasło admina po seedzie.
-- Ustaw domenę i poprawne `APP_URL`.
-- Wykonaj test rezerwacji klienta.
-- Wykonaj test maili transakcyjnych przez `/admin/email-test`.
-- Wykonaj test uploadu galerii.
-- Wykonaj test mobile dla rejestracji, logowania, rezerwacji i panelu admina.
-- Zweryfikuj finalny regulamin i politykę prywatności przed publikacją.
+## Dokumentacja deploy/QA
 
-## ETAP 15
+- [QA checklist](docs/QA_CHECKLIST.md)
+- [Deployment checklist](docs/DEPLOYMENT_CHECKLIST.md)
 
-Następny etap powinien skupić się na produkcyjnym QA i przygotowaniu wdrożenia: testach end-to-end kluczowych ścieżek, konfiguracji hostingu, domeny, Resend, Cloudinary, monitoringu błędów oraz decyzji, czy MVP idzie live bez płatności online.
+Przed produkcja przejdz checklisty, ustaw produkcyjne env, uruchom migracje przez `prisma migrate deploy`, wykonaj seed admina i zrob smoke test rezerwacji, maili oraz galerii.

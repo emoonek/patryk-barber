@@ -17,8 +17,9 @@ export function BookingForm({ serviceId, date, slots }: BookingFormProps) {
 
   if (slots.length === 0) {
     return (
-      <div className="border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
-        Brak dostępnych slotów dla wybranej daty.
+      <div className="grid gap-4 border border-white/10 bg-black/20 p-6 text-sm text-barber-muted">
+        <p>Brak dostepnych slotow dla wybranej daty.</p>
+        <p className="text-barber-cream">Wybierz inny dzien w formularzu powyzej albo skontaktuj sie z salonem.</p>
       </div>
     );
   }

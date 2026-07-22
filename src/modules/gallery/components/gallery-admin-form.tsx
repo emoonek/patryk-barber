@@ -91,7 +91,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
           </summary>
           <div className="mt-4 grid gap-3">
             <p>
-              To pole służy tylko do testowania lokalnych zdjęć z public/galeria-testowa, gdy Cloudinary nie jest
+              To pole służy tylko do lokalnych zdjęć z public/ig, gdy Cloudinary nie jest
               skonfigurowane.
             </p>
             <label className="grid gap-2">
@@ -101,7 +101,7 @@ export function GalleryAdminForm({ mode, image, showDeveloperOptions }: GalleryA
                 defaultValue={image?.imageUrl ?? ""}
                 name="imageUrl"
                 onChange={(event) => setPreviewUrl(event.currentTarget.value)}
-                placeholder="/galeria-testowa/nazwa-pliku.png"
+                placeholder="/ig/nazwa-pliku.png"
               />
             </label>
             {state.errors?.imageUrl ? <span className="text-red-300">{state.errors.imageUrl[0]}</span> : null}

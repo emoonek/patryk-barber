@@ -23,8 +23,7 @@ export default async function GalleryPage() {
           </div>
           <div className="frosted-panel p-5">
             <p className="text-lg font-semibold leading-tight text-barber-chrome md:text-xl">
-              Wybrane fryzury, brody i kadry z pracy w salonie. Zdjęcia testowe są tymczasowe i zostaną
-              później zastąpione prawdziwym portfolio Patryka.
+              Wybrane fryzury, brody i detale cieniowania z prawdziwego portfolio Patryka.
             </p>
             <Link className="chrome-button mt-6 inline-flex px-5 py-3 text-sm font-black uppercase" href="/rezerwacja">
               Zarezerwuj termin
@@ -64,6 +63,9 @@ export default async function GalleryPage() {
             <p className="mt-4 max-w-xl text-2xl font-semibold leading-tight text-barber-frost">
               Galeria jest jeszcze pusta. Wkrótce pojawią się tu wybrane prace Patryka.
             </p>
+            <Link className="chrome-button mt-6 inline-flex px-5 py-3 text-sm font-black uppercase" href="/rezerwacja">
+              Umów wizytę
+            </Link>
           </div>
         )}
       </div>

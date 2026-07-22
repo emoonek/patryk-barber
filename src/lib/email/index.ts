@@ -140,9 +140,11 @@ export function getEmailProviderName() {
 
 export function getEmailProviderStatus() {
   try {
+    const config = emailConfig();
+
     return {
       ok: true,
-      provider: configuredProvider(),
+      provider: config.provider,
       message: null,
     };
   } catch (error) {
@@ -217,7 +219,10 @@ export async function sendEmail(message: EmailMessage) {
       throw error;
     }
 
-    console.error("[EMAIL] Nie udało się wysłać wiadomości.", error);
+    console.error("[EMAIL] Nie udalo sie wyslac wiadomosci.", {
+      name: error instanceof Error ? error.name : "UnknownError",
+      message: error instanceof Error ? error.message : "Nieznany blad providera email.",
+    });
     throw new EmailDeliveryError();
   }
 }

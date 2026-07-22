@@ -7,12 +7,22 @@ import {
 } from "./enums";
 
 export const BUSINESS_PROFILE = {
-  name: "Patryk Barber",
-  address: "Ul. Zwycięstwa 28, 11-710 Piecki",
-  email: "spontan2wz@gmail.com",
-  phone: "+48 575 088 360",
-  instagram: "@patrykbarber",
-  facebook: "Patryk Barber",
+  name: process.env.NEXT_PUBLIC_BUSINESS_NAME ?? "Patryk Barber",
+  address: process.env.NEXT_PUBLIC_BUSINESS_ADDRESS ?? "ul. Zwycięstwa 28/4, 11-710 Piecki",
+  email: process.env.NEXT_PUBLIC_BUSINESS_EMAIL ?? "spontan2wz@gmail.com",
+  phone: process.env.NEXT_PUBLIC_BUSINESS_PHONE ?? "513296426",
+  instagram: process.env.NEXT_PUBLIC_INSTAGRAM_HANDLE ?? "@patrykbarber",
+  facebook: process.env.NEXT_PUBLIC_FACEBOOK_NAME ?? "Facebook",
+  instagramUrl:
+    process.env.NEXT_PUBLIC_INSTAGRAM_URL ??
+    "https://www.instagram.com/patrykbarber?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==",
+  facebookUrl: process.env.NEXT_PUBLIC_FACEBOOK_URL ?? "https://www.facebook.com/share/1aHRhwbUhK/?mibextid=wwXIfr",
+  googleMapsUrl: process.env.NEXT_PUBLIC_GOOGLE_MAPS_URL ?? "https://maps.app.goo.gl/HEG3UCfGwXtCRJk58",
+  openingHours: [
+    "Poniedziałek-piątek: 9:00-17:00",
+    "Sobota: 9:00-14:00",
+    "Niedziela: nieczynne",
+  ],
 } as const;
 
 export const BOOKING_SLOT_START_TIMES = [

@@ -10,8 +10,18 @@ function appUrl() {
   return process.env.APP_URL ?? "http://localhost:3000";
 }
 
+function isProduction() {
+  return process.env.NODE_ENV === "production" || process.env.APP_ENV === "production";
+}
+
 function passwordWithPepper(password: string) {
-  return `${password}${process.env.PASSWORD_PEPPER ?? ""}`;
+  const pepper = process.env.PASSWORD_PEPPER;
+
+  if (isProduction() && (!pepper || pepper.length < 32)) {
+    throw new Error("PASSWORD_PEPPER musi miec co najmniej 32 znaki w production.");
+  }
+
+  return `${password}${pepper ?? ""}`;
 }
 
 export async function registerUser(input: RegisterInput) {

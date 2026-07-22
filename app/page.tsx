@@ -15,27 +15,29 @@ function formatPosterMoney(priceCents: number) {
 const fallbackGallery = [
   {
     id: "fallback-1",
-    imageUrl: "/galeria-testowa/fade-broda.png",
-    altText: "Fade i broda - testowy kadr portfolio",
-    title: "Fade / beard control",
+    imageUrl: "/ig/Buzz Cut z Fade’em i Konturowaniem Brody.png",
+    altText:
+      "Krótkie, równo przycięte włosy połączone z płynnym cieniowaniem oraz precyzyjnie wyznaczoną linią włosów i brody.",
+    title: "Buzz Cut z Fade’em i Konturowaniem Brody",
   },
   {
     id: "fallback-2",
-    imageUrl: "/galeria-testowa/przedipo-metamorfoza.png",
-    altText: "Metamorfoza fryzury - testowy kadr portfolio",
-    title: "Transformation study",
+    imageUrl: "/ig/Textured Crop z Hair Designem.png",
+    altText: "Krótka, teksturowana góra, delikatne cieniowanie oraz indywidualny wzór wycięty nad uchem.",
+    title: "Textured Crop z Hair Designem",
   },
   {
     id: "fallback-3",
-    imageUrl: "/galeria-testowa/slickback-broda.png",
-    altText: "Slick back z broda - testowy kadr portfolio",
-    title: "Classic shape",
+    imageUrl: "/ig/French Crop z Mid Fade’em.png",
+    altText: "Klasyczna krótka grzywka, równa tekstura na górze i płynne przejście po bokach.",
+    title: "French Crop z Mid Fade’em",
   },
   {
     id: "fallback-4",
-    imageUrl: "/galeria-testowa/barberprzypracy.png",
-    altText: "Barber przy pracy - testowy kadr portfolio",
-    title: "Process frame",
+    imageUrl: "/ig/Klasyczne Strzyżenie z Side Partem.png",
+    altText:
+      "Elegancka fryzura zaczesana na bok, wykonana głównie nożyczkami i wykończona naturalnym cieniowaniem.",
+    title: "Klasyczne Strzyżenie z Side Partem",
   },
 ];
 
@@ -212,6 +214,22 @@ export default async function HomePage() {
               <p>{BUSINESS_PROFILE.address}</p>
               <p>{BUSINESS_PROFILE.phone}</p>
               <p>{BUSINESS_PROFILE.instagram}</p>
+              <div className="flex flex-wrap gap-x-5 gap-y-2 pt-2">
+                <a href={BUSINESS_PROFILE.instagramUrl} rel="noopener noreferrer" target="_blank">
+                  Instagram
+                </a>
+                <a href={BUSINESS_PROFILE.facebookUrl} rel="noopener noreferrer" target="_blank">
+                  Facebook
+                </a>
+                <a href={BUSINESS_PROFILE.googleMapsUrl} rel="noopener noreferrer" target="_blank">
+                  Pokaż w Google Maps
+                </a>
+              </div>
+              <div className="grid gap-1 pt-2">
+                {BUSINESS_PROFILE.openingHours.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
             </div>
           </div>
         </div>

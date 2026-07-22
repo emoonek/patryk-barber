@@ -154,7 +154,7 @@ export default async function AdminGalleryPage({ searchParams }: AdminGalleryPag
 
       <div className="mt-8 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
         Upload plików korzysta z warstwy storage przygotowanej pod Cloudinary. W development nadal można
-        wpisać imageUrl ręcznie, np. do zdjęć z katalogu public/galeria-testowa.
+        wpisać imageUrl ręcznie, np. do zdjęć z katalogu public/ig.
       </div>
     </section>
   );

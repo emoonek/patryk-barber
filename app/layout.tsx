@@ -3,12 +3,25 @@ import Link from "next/link";
 import { PublicSessionNav } from "@/modules/auth/components/public-session-nav";
 import "./globals.css";
 
+const appUrl = process.env.APP_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(appUrl),
   title: {
     default: "Patryk Barber",
     template: "%s | Patryk Barber",
   },
-  description: "Premium barber shop w Pieckach. Rezerwacje, konto klienta i panel admina.",
+  description:
+    "Patryk Barber w Pieckach: meskie strzyzenia, broda i rezerwacje online w klimacie premium chrome.",
+  openGraph: {
+    title: "Patryk Barber",
+    description:
+      "Premium barber shop w Pieckach. Sprawdz galerie prac i zarezerwuj termin online.",
+    url: appUrl,
+    siteName: "Patryk Barber",
+    locale: "pl_PL",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

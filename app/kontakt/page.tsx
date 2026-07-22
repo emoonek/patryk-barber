@@ -9,9 +9,9 @@ const contactItems = [
   { label: "Adres", value: BUSINESS_PROFILE.address },
   { label: "Telefon", value: BUSINESS_PROFILE.phone },
   { label: "Email", value: BUSINESS_PROFILE.email },
-  { label: "Instagram", value: BUSINESS_PROFILE.instagram },
-  { label: "Facebook", value: BUSINESS_PROFILE.facebook },
-  { label: "Godziny", value: "Pon.-sob. według dostępnych terminów rezerwacji" },
+  { label: "Instagram", value: BUSINESS_PROFILE.instagram, href: BUSINESS_PROFILE.instagramUrl, linkText: "Instagram" },
+  { label: "Facebook", value: BUSINESS_PROFILE.facebook, href: BUSINESS_PROFILE.facebookUrl, linkText: "Facebook" },
+  { label: "Mapa", value: BUSINESS_PROFILE.address, href: BUSINESS_PROFILE.googleMapsUrl, linkText: "Pokaż w Google Maps" },
 ];
 
 export default function ContactPage() {
@@ -44,8 +44,26 @@ export default function ContactPage() {
             <div className="frosted-panel p-5" key={item.label}>
               <p className="text-xs font-semibold uppercase tracking-[0.24em] text-barber-silver">{item.label}</p>
               <p className="mt-3 text-xl font-semibold leading-tight text-barber-frost">{item.value}</p>
+              {item.href ? (
+                <a
+                  className="mt-4 inline-flex text-sm font-black uppercase tracking-[0.18em] text-barber-chrome"
+                  href={item.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {item.linkText}
+                </a>
+              ) : null}
             </div>
           ))}
+          <div className="frosted-panel p-5 md:col-span-2">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-barber-silver">Godziny</p>
+            <div className="mt-3 grid gap-2 text-xl font-semibold leading-tight text-barber-frost">
+              {BUSINESS_PROFILE.openingHours.map((line) => (
+                <p key={line}>{line}</p>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

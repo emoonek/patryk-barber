@@ -114,9 +114,17 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
           </tbody>
         </table>
         {bookings.length === 0 ? (
-          <p className="p-5 text-sm text-barber-muted">
-            Brak rezerwacji dla wybranych filtrów. Zmień filtr albo dodaj rezerwację manualnie.
-          </p>
+          <div className="grid gap-3 p-5 text-sm text-barber-muted">
+            <p>Brak rezerwacji dla wybranych filtrów.</p>
+            <div className="flex flex-wrap gap-3">
+              <Link className="font-semibold text-barber-brass" href="/admin/rezerwacje">
+                Wyczyść filtry
+              </Link>
+              <Link className="font-semibold text-barber-brass" href="/admin/rezerwacje/nowa">
+                Dodaj rezerwację manualnie
+              </Link>
+            </div>
+          </div>
         ) : null}
       </div>
     </section>

@@ -180,12 +180,13 @@ Seed znajduje sie w `prisma/seed.ts`.
 Tworzy albo aktualizuje:
 - admina: `spontan2wz@gmail.com`
 - uslugi startowe:
-  - Strzyżenie męskie - 70 PLN - 60 min
-  - Trymowanie kontur brody - 40 PLN - 60 min
-  - Same boki - 60 PLN - 60 min
-  - Combo (strzyzenie glowy + broda) - 110 PLN - 60 min
-  - Strzyżenie męskie (długie włosy) - 70 PLN - 60 min
-- domyslna dostepnosc od poniedzialku do piatku 09:00-17:00
+  - Strzyzenie meskie klasyczne - 60 PLN - 60 min
+  - Strzyzenie meskie - 70 PLN - 60 min
+  - Strzyzenie dlugich wlosow - 80 PLN - 60 min
+  - Trymowanie i kontur brody - 40 PLN - 60 min
+  - Combo - 110 PLN - 60 min
+  - Pakiet ojciec + syn - 110 PLN - 60 min
+- domyslna dostepnosc: poniedzialek-piatek sloty 09:00-16:00, sobota sloty 09:00-13:00
 
 Seed wymaga zmiennej:
 - `ADMIN_INITIAL_PASSWORD`

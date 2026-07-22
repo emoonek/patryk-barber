@@ -69,6 +69,13 @@ export default async function AdminCalendarPage({ searchParams }: AdminCalendarP
         </p>
       </div>
 
+      {bookings.length === 0 && blocks.length === 0 ? (
+        <div className="mt-6 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
+          Ten tydzień nie ma jeszcze rezerwacji ani blokad. Wolne sloty poniżej prowadzą do manualnego dodania
+          rezerwacji.
+        </div>
+      ) : null}
+
       <div className="mt-8 overflow-x-auto border border-white/10 bg-black/20">
         <table className="w-full min-w-[1080px] border-collapse text-left text-sm">
           <thead>

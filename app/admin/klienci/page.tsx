@@ -98,9 +98,17 @@ export default async function AdminCustomersPage({ searchParams }: AdminCustomer
           </tbody>
         </table>
         {customers.length === 0 ? (
-          <p className="p-5 text-sm text-barber-muted">
-            Brak klientów dla podanego wyszukiwania. Wyczyść wyszukiwarkę albo poczekaj na pierwszą rejestrację.
-          </p>
+          <div className="grid gap-3 p-5 text-sm text-barber-muted">
+            <p>Brak klientów dla podanego wyszukiwania.</p>
+            <div className="flex flex-wrap gap-3">
+              <Link className="font-semibold text-barber-brass" href="/admin/klienci">
+                Wyczyść wyszukiwanie
+              </Link>
+              <Link className="font-semibold text-barber-brass" href="/admin/rezerwacje/nowa">
+                Dodaj rezerwację manualnie
+              </Link>
+            </div>
+          </div>
         ) : null}
       </div>
     </section>
