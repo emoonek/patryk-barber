@@ -19,7 +19,6 @@ type ServiceOption = {
   id: string;
   name: string;
   priceCents: number;
-  durationMinutes: number;
 };
 
 type AdminManualBookingFormProps = {
@@ -104,7 +103,7 @@ export function AdminManualBookingForm({
             <option value="">Wybierz usluge</option>
             {services.map((service) => (
               <option key={service.id} value={service.id}>
-                {service.name} - {formatMoney(service.priceCents)} / {service.durationMinutes} min
+                {service.name} - {formatMoney(service.priceCents)}
               </option>
             ))}
           </select>

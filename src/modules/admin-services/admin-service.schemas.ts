@@ -25,9 +25,9 @@ export const adminServiceFormSchema = z.object({
     .max(120, "Nazwa moze miec maksymalnie 120 znakow."),
   priceCents: pricePlnSchema,
   durationMinutes: z.coerce
-    .number({ invalid_type_error: "Czas trwania musi byc liczba." })
-    .int("Czas trwania musi byc liczba calkowita.")
-    .min(15, "Czas trwania musi wynosic minimum 15 minut."),
+    .number({ invalid_type_error: "Nieprawidlowa konfiguracja uslugi." })
+    .int("Nieprawidlowa konfiguracja uslugi.")
+    .min(15, "Nieprawidlowa konfiguracja uslugi."),
   isActive: checkboxBoolean,
   sortOrder: z.coerce
     .number({ invalid_type_error: "Kolejnosc sortowania musi byc liczba." })

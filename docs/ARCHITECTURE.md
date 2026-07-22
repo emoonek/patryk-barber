@@ -126,7 +126,7 @@ Glowne zasady domenowe:
 - telefon klienta jest opcjonalny, ale zalecany
 - rezerwacje są automatycznie potwierdzane
 - płatność odbywa się na miejscu
-- domyślny czas usługi to 60 minut
+- domyslna wewnetrzna dlugosc slotu jest stala
 - sloty startują o 09:00, 10:00, 11:00, 12:00, 13:00, 14:00, 15:00 i 16:00
 - ostatni slot zaczyna się o 16:00
 - klient może anulować wizytę bez limitu czasowego
@@ -137,7 +137,7 @@ Glowne zasady domenowe:
 
 Encje:
 - `User` - klient albo admin, dane logowania, dane kontaktowe i status emaila
-- `Service` - usluga, cena w groszach, czas trwania, widocznosc i kolejnosc
+- `Service` - usluga, cena w groszach, wewnetrzna konfiguracja slotow, widocznosc i kolejnosc
 - `Booking` - rezerwacja konkretnego slotu i uslugi
 - `BookingStatusHistory` - audyt zmian statusu rezerwacji
 - `GalleryImage` - publiczna galeria zdjec
@@ -180,12 +180,12 @@ Seed znajduje sie w `prisma/seed.ts`.
 Tworzy albo aktualizuje:
 - admina: `spontan2wz@gmail.com`
 - uslugi startowe:
-  - Strzyzenie meskie klasyczne - 60 PLN - 60 min
-  - Strzyzenie meskie - 70 PLN - 60 min
-  - Strzyzenie dlugich wlosow - 80 PLN - 60 min
-  - Trymowanie i kontur brody - 40 PLN - 60 min
-  - Combo - 110 PLN - 60 min
-  - Pakiet ojciec + syn - 110 PLN - 60 min
+  - Strzyzenie meskie klasyczne - 60 PLN
+  - Strzyzenie meskie - 70 PLN
+  - Strzyzenie dlugich wlosow - 80 PLN
+  - Trymowanie i kontur brody - 40 PLN
+  - Combo - 110 PLN
+  - Pakiet ojciec + syn - 110 PLN
 - domyslna dostepnosc: poniedzialek-piatek sloty 09:00-16:00, sobota sloty 09:00-13:00
 
 Seed wymaga zmiennej:
@@ -283,7 +283,7 @@ API / Route Handlers:
 
 `services`
 - lista uslug
-- ceny, czas trwania, aktywnosc, sortowanie
+- ceny, aktywnosc, sortowanie i wewnetrzna konfiguracja slotow
 - walidacja, czy usluga moze byc rezerwowana
 
 `availability`
@@ -337,7 +337,7 @@ Warstwa 2: transakcja bazy danych
 - na konflikt zwrocic polski komunikat: "Ten termin zostal juz zajety. Wybierz inna godzine."
 
 Warstwa 3: constraint w bazie
-- dla MVP, przy stałych 60-minutowych slotach, używamy unikalnego pola `activeSlotKey`
+- dla MVP, przy stalej siatce slotow, uzywamy unikalnego pola `activeSlotKey`
 - status aktywny to `confirmed`
 - dla rezerwacji `confirmed` pole `activeSlotKey` ma wartość deterministyczną, np. `2026-07-01T09:00:00.000Z`
 - przy anulowaniu, `completed` albo `no_show` pole `activeSlotKey` jest ustawiane na `null`
@@ -349,8 +349,8 @@ W Prisma:
 activeSlotKey String? @unique
 ```
 
-Warstwa 4: docelowe zabezpieczenie PostgreSQL dla zmiennych czasow uslug
-- jesli pozniej uslugi beda trwaly roznie, dodac migracje SQL z exclusion constraint na zakres czasu:
+Warstwa 4: docelowe zabezpieczenie PostgreSQL dla zmiennej dlugosci slotow
+- jesli pozniej uslugi beda mialy rozne dlugosci, dodac migracje SQL z exclusion constraint na zakres:
 
 ```sql
 CREATE EXTENSION IF NOT EXISTS btree_gist;

@@ -159,9 +159,11 @@ export default async function HomePage() {
                     <h3 className="max-w-4xl text-[clamp(1.45rem,3.4vw,3.7rem)] font-black uppercase leading-[1.02] text-barber-frost transition group-hover:text-barber-chrome">
                       {service.name}
                     </h3>
-                    <p className="mt-2 max-w-2xl text-xs uppercase tracking-[0.16em] text-barber-silver md:text-sm">
-                      {service.description ?? `${service.durationMinutes} min / precyzyjna usługa`}
-                    </p>
+                    {service.description ? (
+                      <p className="mt-2 max-w-2xl text-xs uppercase tracking-[0.16em] text-barber-silver md:text-sm">
+                        {service.description}
+                      </p>
+                    ) : null}
                   </div>
                   <p className="text-left text-[clamp(1.35rem,3vw,2.65rem)] font-black text-barber-chrome md:text-right">
                     {formatPosterMoney(service.priceCents)}

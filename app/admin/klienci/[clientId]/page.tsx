@@ -170,7 +170,6 @@ type CustomerBooking = {
   endAt: Date;
   serviceNameSnapshot: string;
   servicePriceCentsSnapshot: number;
-  serviceDurationMinutesSnapshot: number;
 };
 
 function BookingList({ bookings, emptyText }: { bookings: CustomerBooking[]; emptyText: string }) {
@@ -190,9 +189,7 @@ function BookingList({ bookings, emptyText }: { bookings: CustomerBooking[]; emp
             {formatDate(booking.startAt)}, {formatTime(booking.startAt)} - {formatTime(booking.endAt)}
           </p>
           <p>{booking.serviceNameSnapshot}</p>
-          <p>
-            {formatMoney(booking.servicePriceCentsSnapshot)} / {booking.serviceDurationMinutesSnapshot} min
-          </p>
+          <p>{formatMoney(booking.servicePriceCentsSnapshot)}</p>
           <p>{bookingStatusLabel(booking.status)}</p>
         </Link>
       ))}

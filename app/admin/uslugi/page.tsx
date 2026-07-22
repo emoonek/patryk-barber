@@ -48,7 +48,6 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
             <tr className="border-b border-white/10">
               <th className="px-4 py-3 font-medium">Nazwa</th>
               <th className="px-4 py-3 font-medium">Cena</th>
-              <th className="px-4 py-3 font-medium">Czas</th>
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Kolejność</th>
               <th className="px-4 py-3 font-medium">Rezerwacje</th>
@@ -62,7 +61,6 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
               <tr className="border-b border-white/10 text-barber-muted last:border-0" key={service.id}>
                 <td className="px-4 py-3 text-barber-cream">{service.name}</td>
                 <td className="px-4 py-3">{formatMoney(service.priceCents)}</td>
-                <td className="px-4 py-3">{service.durationMinutes} min</td>
                 <td className="px-4 py-3">{service.isActive ? "Aktywna" : "Nieaktywna"} </td>
                 <td className="px-4 py-3">{service.sortOrder}</td>
                 <td className="px-4 py-3">{service._count.bookings}</td>
@@ -106,8 +104,8 @@ export default async function AdminServicesPage({ searchParams }: AdminServicesP
       </div>
 
       <div className="mt-8 border border-white/10 bg-black/20 p-5 text-sm leading-6 text-barber-muted">
-        Rezerwacje zapisują nazwę, cenę i czas usługi jako snapshot w momencie rezerwacji, więc zmiany w usługach
-        nie nadpiszą historycznych danych wizyt.
+        Rezerwacje zapisują nazwę i cenę usługi jako snapshot w momencie rezerwacji, więc zmiany w usługach nie
+        nadpiszą historycznych danych wizyt.
       </div>
     </section>
   );

@@ -11,7 +11,6 @@ type ServiceOption = {
   id: string;
   name: string;
   priceCents: number;
-  durationMinutes: number;
 };
 
 type AdminBookingEditFormProps = {
@@ -58,7 +57,7 @@ export function AdminBookingEditForm({ booking, services }: AdminBookingEditForm
           >
             {services.map((service) => (
               <option key={service.id} value={service.id}>
-                {service.name} - {formatMoney(service.priceCents)} / {service.durationMinutes} min
+                {service.name} - {formatMoney(service.priceCents)}
               </option>
             ))}
           </select>

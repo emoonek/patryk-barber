@@ -111,9 +111,7 @@ export default async function AdminCalendarPage({ searchParams }: AdminCalendarP
                             {formatTime(booking.startAt)}
                           </span>
                           <span className="font-semibold">{customerName(booking.customer)}</span>
-                          <span className="text-xs text-barber-muted">
-                            {booking.serviceNameSnapshot} / {booking.serviceDurationMinutesSnapshot} min
-                          </span>
+                          <span className="text-xs text-barber-muted">{booking.serviceNameSnapshot}</span>
                           <span className="text-xs text-barber-muted">{adminStatusLabel(booking.status)}</span>
                         </Link>
                       ) : block ? (

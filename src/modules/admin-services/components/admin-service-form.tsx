@@ -14,7 +14,6 @@ type AdminServiceFormProps = {
     id: string;
     name: string;
     priceCents: number;
-    durationMinutes: number;
     isActive: boolean;
     sortOrder: number;
   };
@@ -32,7 +31,7 @@ export function AdminServiceForm({ mode, service }: AdminServiceFormProps) {
       {service ? <input name="serviceId" type="hidden" value={service.id} /> : null}
       <h2 className="text-2xl font-semibold text-barber-cream">{title}</h2>
 
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-4 md:grid-cols-4">
         <label className="grid gap-2 text-sm text-barber-muted md:col-span-2">
           Nazwa
           <input
@@ -54,21 +53,6 @@ export function AdminServiceForm({ mode, service }: AdminServiceFormProps) {
             placeholder="70.00"
           />
           {state.errors?.priceCents ? <span className="text-red-300">{state.errors.priceCents[0]}</span> : null}
-        </label>
-
-        <label className="grid gap-2 text-sm text-barber-muted">
-          Czas w minutach
-          <input
-            className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
-            defaultValue={service?.durationMinutes ?? 60}
-            min={15}
-            name="durationMinutes"
-            step={15}
-            type="number"
-          />
-          {state.errors?.durationMinutes ? (
-            <span className="text-red-300">{state.errors.durationMinutes[0]}</span>
-          ) : null}
         </label>
 
         <label className="grid gap-2 text-sm text-barber-muted">

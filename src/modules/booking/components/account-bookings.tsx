@@ -8,7 +8,6 @@ type AccountBooking = {
   startAt: Date;
   serviceNameSnapshot: string;
   servicePriceCentsSnapshot: number;
-  serviceDurationMinutesSnapshot: number;
 };
 
 type AccountBookingsProps = {
@@ -37,9 +36,7 @@ function BookingRow({ booking, canCancel }: { booking: AccountBooking; canCancel
           {formatDate(booking.startAt)}, {formatTime(booking.startAt)}
         </p>
       </div>
-      <p>
-        {formatMoney(booking.servicePriceCentsSnapshot)} / {booking.serviceDurationMinutesSnapshot} min
-      </p>
+      <p>{formatMoney(booking.servicePriceCentsSnapshot)}</p>
       <p>{statusLabel(booking.status)}</p>
       {canCancel ? (
         <form action={cancelBookingAction}>

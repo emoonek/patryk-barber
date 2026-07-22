@@ -9,6 +9,8 @@ import {
 } from "./admin-service.schemas";
 import { createAdminService, setAdminServiceActive, updateAdminService } from "./admin-service.service";
 
+const INTERNAL_SERVICE_DURATION_MINUTES = 60;
+
 export type AdminServiceActionState = {
   ok?: boolean;
   message?: string;
@@ -45,7 +47,7 @@ export async function adminCreateServiceAction(
   const parsed = adminCreateServiceSchema.safeParse({
     name: formValue(formData, "name"),
     priceCents: formValue(formData, "priceCents"),
-    durationMinutes: formValue(formData, "durationMinutes"),
+    durationMinutes: INTERNAL_SERVICE_DURATION_MINUTES,
     isActive: formData.get("isActive") ?? "",
     sortOrder: formValue(formData, "sortOrder"),
   });
@@ -73,7 +75,7 @@ export async function adminUpdateServiceAction(
     serviceId: formValue(formData, "serviceId"),
     name: formValue(formData, "name"),
     priceCents: formValue(formData, "priceCents"),
-    durationMinutes: formValue(formData, "durationMinutes"),
+    durationMinutes: INTERNAL_SERVICE_DURATION_MINUTES,
     isActive: formData.get("isActive") ?? "",
     sortOrder: formValue(formData, "sortOrder"),
   });

@@ -14,7 +14,6 @@ import { AdminActionMessage } from "./admin-action-message";
 type ServiceOption = {
   id: string;
   name: string;
-  durationMinutes: number;
 };
 
 type AvailabilityExceptionItem = {
@@ -113,11 +112,11 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
           <label className="grid gap-2 text-sm text-barber-muted">
             Usluga
             <select className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream" name="serviceId">
-              {services.map((service) => (
-                <option key={service.id} value={service.id}>
-                  {service.name} / {service.durationMinutes} min
-                </option>
-              ))}
+            {services.map((service) => (
+              <option key={service.id} value={service.id}>
+                  {service.name}
+              </option>
+            ))}
             </select>
           </label>
           <label className="grid gap-2 text-sm text-barber-muted">

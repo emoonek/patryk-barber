@@ -102,9 +102,7 @@ export default async function BookingPage({ searchParams }: BookingPageProps) {
           {selectedService ? (
             <div className="border-l border-barber-chrome/40 pl-4 text-sm text-barber-silver">
               <p className="font-medium text-barber-frost">{selectedService.name}</p>
-              <p>
-                {formatMoney(selectedService.priceCents)} · {selectedService.durationMinutes} min
-              </p>
+              <p>{formatMoney(selectedService.priceCents)}</p>
             </div>
           ) : null}
 

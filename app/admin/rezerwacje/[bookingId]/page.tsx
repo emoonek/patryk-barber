@@ -71,9 +71,6 @@ export default async function AdminBookingDetailsPage({ params }: AdminBookingDe
             <span className="text-barber-cream">Cena:</span> {formatMoney(booking.servicePriceCentsSnapshot)}
           </p>
           <p>
-            <span className="text-barber-cream">Czas usługi:</span> {booking.serviceDurationMinutesSnapshot} min
-          </p>
-          <p>
             <span className="text-barber-cream">Termin:</span> {formatDate(booking.startAt)},{" "}
             {formatTime(booking.startAt)} - {formatTime(booking.endAt)}
           </p>

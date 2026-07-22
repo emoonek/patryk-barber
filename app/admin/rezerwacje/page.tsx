@@ -99,9 +99,7 @@ export default async function AdminBookingsPage({ searchParams }: AdminBookingsP
                 <td className="px-4 py-3">{customerName(booking.customer)}</td>
                 <td className="px-4 py-3">{booking.customer.email}</td>
                 <td className="px-4 py-3">{booking.customer.phone ?? "-"}</td>
-                <td className="px-4 py-3">
-                  {booking.serviceNameSnapshot} / {booking.serviceDurationMinutesSnapshot} min
-                </td>
+                <td className="px-4 py-3">{booking.serviceNameSnapshot}</td>
                 <td className="px-4 py-3">{formatMoney(booking.servicePriceCentsSnapshot)}</td>
                 <td className="px-4 py-3">{adminStatusLabel(booking.status)}</td>
                 <td className="px-4 py-3">

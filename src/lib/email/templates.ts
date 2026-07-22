@@ -68,7 +68,6 @@ function bookingDetails(context: BookingEmailContext) {
     `Data: ${context.date}`,
     `Godzina: ${context.time}`,
     `Cena: ${context.servicePrice}`,
-    `Czas trwania: ${context.serviceDurationMinutes} min`,
     "",
     "Kontakt do salonu:",
     ...salonContactLines(),
