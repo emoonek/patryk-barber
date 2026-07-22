@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { CinematicVideoHero } from "@/components/marketing/cinematic-video-hero";
-import { ScrollScrubVideo } from "@/components/marketing/scroll-scrub-video";
+import { PortfolioSlideshow } from "@/components/marketing/portfolio-slideshow";
 import { BUSINESS_PROFILE } from "@/domain/types";
 import { formatMoney } from "@/modules/booking/booking.format";
 import { listActiveServices } from "@/modules/booking/booking.repository";
@@ -39,11 +39,37 @@ const fallbackGallery = [
       "Elegancka fryzura zaczesana na bok, wykonana głównie nożyczkami i wykończona naturalnym cieniowaniem.",
     title: "Klasyczne Strzyżenie z Side Partem",
   },
+  {
+    id: "fallback-5",
+    imageUrl: "/ig/Skin Fade – Detal Cieniowania.png",
+    altText: "Zbliżenie na precyzyjne cieniowanie skin fade z czystą linią przejścia.",
+    title: "Skin Fade – Detal Cieniowania",
+  },
+  {
+    id: "fallback-6",
+    imageUrl: "/ig/Textured Quiff z Low Fade’em.png",
+    altText: "Teksturowany quiff z niskim fade’em i naturalnym wykończeniem góry.",
+    title: "Textured Quiff z Low Fade’em",
+  },
+  {
+    id: "fallback-7",
+    imageUrl: "/ig/Modern Mullet z Taper Fade’em.png",
+    altText: "Nowoczesny mullet z taper fade’em i kontrolowaną długością z tyłu.",
+    title: "Modern Mullet z Taper Fade’em",
+  },
+  {
+    id: "fallback-8",
+    imageUrl: "/ig/Krótki Crop z Low Fade’em.png",
+    altText: "Krótki crop z niskim fade’em, mocną teksturą i czystym konturem.",
+    title: "Krótki Crop z Low Fade’em",
+  },
 ];
 
 export default async function HomePage() {
   const [services, galleryImages] = await Promise.all([listActiveServices(), listVisibleGalleryImages()]);
-  const portfolioImages = (galleryImages.length > 0 ? galleryImages : fallbackGallery).slice(0, 4);
+  const allPortfolioImages = galleryImages.length > 0 ? galleryImages : fallbackGallery;
+  const slideshowImages = allPortfolioImages.slice(0, 8);
+  const portfolioImages = allPortfolioImages.slice(0, 4);
   const heroFallback = portfolioImages[0]?.imageUrl;
 
   return (
@@ -83,35 +109,28 @@ export default async function HomePage() {
       </section>
 
       <section className="relative overflow-hidden bg-[radial-gradient(circle_at_20%_18%,rgba(185,216,238,0.12),transparent_30rem),linear-gradient(135deg,#05080a,#101821_52%,#050607)] px-5 py-14 md:px-10 md:py-24">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)] lg:items-start">
-        <div className="relative min-h-[54svh] overflow-hidden lg:min-h-[128svh]">
-          <ScrollScrubVideo
-            className="chrome-frame sticky top-24 h-[54svh] overflow-hidden bg-[radial-gradient(circle_at_center,rgba(185,216,238,0.16),transparent_28rem),#050607] lg:h-[calc(100svh-7rem)]"
-            poster={heroFallback}
-            src={heroVideoSrc}
-          />
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(3,4,5,0.08),rgba(3,4,5,0.34))]" />
-        </div>
-        <div className="relative z-10 flex items-center py-2 lg:min-h-[calc(100svh-8rem)] lg:py-12">
-          <div className="frosted-panel max-w-xl p-5 md:p-7">
-            <p className="text-xs font-semibold uppercase tracking-[0.34em] text-barber-silver">Transformacja / craft</p>
-            <h2 className="mt-5 text-[clamp(2.1rem,6vw,4.6rem)] font-black uppercase leading-[0.92] text-barber-frost md:mt-6">
-              Fade budowany warstwa po warstwie.
-            </h2>
-            <div className="mt-8 grid gap-4 text-base font-semibold leading-tight text-barber-chrome md:text-xl">
-              {[
-                "Detal, który zmienia całą sylwetkę.",
-                "Strzyżenie jako forma, nie tylko skracanie włosów.",
-                "Szybkość bez utraty kontroli nad linią, ciężarem i proporcją.",
-              ].map((item, index) => (
-                <p className="border-l border-barber-chrome/28 pl-4" key={item}>
-                  <span className="mr-3 text-xs uppercase tracking-[0.2em] text-barber-silver">0{index + 1}</span>
-                  {item}
-                </p>
-              ))}
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(360px,0.95fr)] lg:items-center">
+          <PortfolioSlideshow images={slideshowImages} />
+          <div className="relative z-10 flex items-center">
+            <div className="frosted-panel w-full max-w-xl p-5 md:p-7">
+              <p className="text-xs font-semibold uppercase tracking-[0.34em] text-barber-silver">Transformacja / craft</p>
+              <h2 className="mt-5 text-[clamp(2.1rem,6vw,4.6rem)] font-black uppercase leading-[0.92] text-barber-frost md:mt-6">
+                Fade budowany warstwami.
+              </h2>
+              <div className="mt-8 grid gap-4 text-base font-semibold leading-tight text-barber-chrome md:text-xl">
+                {[
+                  "Detal, który zmienia całą sylwetkę.",
+                  "Strzyżenie jako forma, nie tylko skracanie włosów.",
+                  "Szybkość bez utraty kontroli nad linią, ciężarem i proporcją.",
+                ].map((item, index) => (
+                  <p className="border-l border-barber-chrome/28 pl-4" key={item}>
+                    <span className="mr-3 text-xs uppercase tracking-[0.2em] text-barber-silver">0{index + 1}</span>
+                    {item}
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
         </div>
       </section>
 

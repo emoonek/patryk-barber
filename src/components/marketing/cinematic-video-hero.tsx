@@ -37,7 +37,7 @@ export function CinematicVideoHero({ fallbackImage, src }: CinematicVideoHeroPro
         />
       ) : null}
       {playVideo ? (
-        /* TODO: replace the test campaign video with optimized MP4/WebM plus a dedicated poster frame. */
+        /* Placeholder Pika video. Replace with Patryk's dedicated hero film when delivered. */
         <video
           aria-hidden="true"
           autoPlay
