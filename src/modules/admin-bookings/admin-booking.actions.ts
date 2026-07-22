@@ -108,6 +108,7 @@ export async function adminCreateBookingAction(
   }
 
   revalidatePath("/admin");
+  revalidatePath("/admin/kalendarz");
   revalidatePath("/admin/rezerwacje");
   revalidatePath("/rezerwacja");
   return { ok: true, message: "Rezerwacja zostala utworzona." };
@@ -246,6 +247,7 @@ export async function deleteAvailabilityExceptionAction(formData: FormData) {
 
 function revalidateAdminBookingPaths(bookingId: string) {
   revalidatePath("/admin");
+  revalidatePath("/admin/kalendarz");
   revalidatePath("/admin/rezerwacje");
   revalidatePath(`/admin/rezerwacje/${bookingId}`);
   revalidatePath("/konto");
@@ -254,5 +256,6 @@ function revalidateAdminBookingPaths(bookingId: string) {
 
 function revalidateAvailabilityPaths() {
   revalidatePath("/admin/dostepnosc");
+  revalidatePath("/admin/kalendarz");
   revalidatePath("/rezerwacja");
 }

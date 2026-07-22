@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
-import { DEFAULT_SLOT_TIMES, formatDate, formatTime, todayInputValue } from "@/modules/booking/booking.format";
+import { useActionState, useEffect, useState } from "react";
+import { formatDate, formatTime, todayInputValue } from "@/modules/booking/booking.format";
+import { getBookableSlotStartsForDate, type BookingSlotStart } from "@/modules/booking/opening-hours";
 import {
   blockFullDayAction,
   blockSingleSlotAction,
@@ -33,6 +34,15 @@ const initialState: AdminActionState = {};
 export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabilityManagerProps) {
   const [dayState, dayAction, dayPending] = useActionState(blockFullDayAction, initialState);
   const [slotState, slotAction, slotPending] = useActionState(blockSingleSlotAction, initialState);
+  const [slotDate, setSlotDate] = useState(todayInputValue());
+  const slotTimes = getBookableSlotStartsForDate(slotDate);
+  const [slotTime, setSlotTime] = useState<string>(slotTimes[0] ?? "");
+
+  useEffect(() => {
+    if (!slotTimes.includes(slotTime as BookingSlotStart)) {
+      setSlotTime(slotTimes[0] ?? "");
+    }
+  }, [slotTime, slotTimes]);
 
   return (
     <div className="grid gap-8">
@@ -76,16 +86,23 @@ export function AdminAvailabilityManager({ exceptions, services }: AdminAvailabi
               Data
               <input
                 className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
-                defaultValue={todayInputValue()}
                 min={todayInputValue()}
                 name="date"
+                onChange={(event) => setSlotDate(event.target.value)}
                 type="date"
+                value={slotDate}
               />
             </label>
             <label className="grid gap-2 text-sm text-barber-muted">
               Godzina
-              <select className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream" name="time">
-                {DEFAULT_SLOT_TIMES.map((time) => (
+              <select
+                className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
+                name="time"
+                onChange={(event) => setSlotTime(event.target.value)}
+                value={slotTime}
+              >
+                {slotTimes.length === 0 ? <option value="">Salon nieczynny</option> : null}
+                {slotTimes.map((time) => (
                   <option key={time} value={time}>
                     {time}
                   </option>

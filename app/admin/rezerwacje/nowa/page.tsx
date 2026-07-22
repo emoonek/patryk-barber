@@ -10,8 +10,18 @@ export const metadata = {
   title: "Nowa rezerwacja",
 };
 
-export default async function AdminNewBookingPage() {
+type AdminNewBookingPageProps = {
+  searchParams?: Promise<{
+    date?: string;
+    time?: string;
+  }>;
+};
+
+export default async function AdminNewBookingPage({ searchParams }: AdminNewBookingPageProps) {
   await requireAdmin();
+  const params = (await searchParams) ?? {};
+  const defaultDate = params.date && /^\d{4}-\d{2}-\d{2}$/.test(params.date) ? params.date : undefined;
+  const defaultTime = params.time && /^\d{2}:\d{2}$/.test(params.time) ? params.time : undefined;
   const [customers, services] = await Promise.all([listAdminCustomers(), listAdminServices()]);
 
   return (
@@ -33,7 +43,12 @@ export default async function AdminNewBookingPage() {
       </div>
 
       <div className="mt-10">
-        <AdminManualBookingForm customers={customers} services={services} />
+        <AdminManualBookingForm
+          customers={customers}
+          defaultDate={defaultDate}
+          defaultTime={defaultTime}
+          services={services}
+        />
       </div>
     </section>
   );

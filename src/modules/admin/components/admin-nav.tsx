@@ -3,6 +3,7 @@ import Link from "next/link";
 const adminLinks = [
   { href: "/admin", label: "Dashboard" },
   { href: "/admin/rezerwacje", label: "Rezerwacje" },
+  { href: "/admin/kalendarz", label: "Kalendarz" },
   { href: "/admin/klienci", label: "Klienci" },
   { href: "/admin/uslugi", label: "Usługi" },
   { href: "/admin/galeria", label: "Galeria" },

@@ -10,7 +10,6 @@ import {
   addMinutes,
   dateTimeFromParts,
   dayRange,
-  DEFAULT_SLOT_TIMES,
   formatDate,
   formatMoney,
   formatSlotKey,
@@ -18,6 +17,7 @@ import {
   rangesOverlap,
   type AvailableSlot,
 } from "./booking.format";
+import { assertSlotWithinOpeningHours, getBookableSlotStartsForDate } from "./opening-hours";
 import type { CancelBookingInput, CreateBookingInput } from "./booking.schemas";
 import {
   ACTIVE_BOOKING_STATUS,
@@ -57,7 +57,7 @@ export async function getAvailableSlots(serviceId: string, date: string): Promis
   ]);
   const takenSlotKeys = new Set(activeBookings.map((booking) => booking.activeSlotKey).filter(Boolean));
 
-  return DEFAULT_SLOT_TIMES.map((time) => {
+  return getBookableSlotStartsForDate(date).map((time) => {
     const startAt = dateTimeFromParts(date, time);
     return {
       time,
@@ -82,6 +82,8 @@ export async function getAvailableSlots(serviceId: string, date: string): Promis
 export async function createBooking(customerId: string, input: CreateBookingInput) {
   const now = new Date();
   const startAt = dateTimeFromParts(input.date, input.time);
+
+  assertSlotWithinOpeningHours(input.date, input.time);
 
   if (startAt <= now) {
     throw new Error("Nie można zarezerwować terminu w przeszłości.");

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { PublicSessionNav } from "@/modules/auth/components/public-session-nav";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -24,26 +25,7 @@ export default function RootLayout({
               <Link className="text-base font-black uppercase tracking-wide text-barber-frost md:text-lg" href="/">
                 Pat Barber
               </Link>
-              <div className="flex flex-wrap items-center gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.12em] text-barber-silver sm:justify-end md:gap-4 md:text-xs">
-                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/">
-                  Strona główna
-                </Link>
-                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/galeria">
-                  Galeria
-                </Link>
-                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/kontakt">
-                  Kontakt
-                </Link>
-                <Link className="px-1 py-2 transition hover:text-barber-frost" href="/regulamin-rezerwacji">
-                  Regulamin
-                </Link>
-                <Link
-                  className="chrome-button ml-1 min-h-11 px-3 py-2 font-black md:px-4"
-                  href="/rezerwacja"
-                >
-                  Rezerwacja
-                </Link>
-              </div>
+              <PublicSessionNav />
             </nav>
           </header>
           <main>{children}</main>

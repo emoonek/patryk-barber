@@ -1,4 +1,4 @@
-import { BookingStatus, type Prisma } from "@prisma/client";
+import { AvailabilityExceptionType, BookingStatus, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { dayRange } from "@/modules/booking/booking.format";
 import type { AdminBookingFilters } from "./admin-booking.schemas";
@@ -97,6 +97,20 @@ export function listAdminBookings(filters: AdminBookingFilters) {
   });
 }
 
+export function listAdminCalendarBookings(startsAt: Date, endsAt: Date) {
+  return prisma.booking.findMany({
+    where: {
+      status: BookingStatus.confirmed,
+      startAt: {
+        gte: startsAt,
+        lt: endsAt,
+      },
+    },
+    orderBy: { startAt: "asc" },
+    select: adminBookingListSelect,
+  });
+}
+
 export function getAdminBookingDetails(bookingId: string) {
   return prisma.booking.findUnique({
     where: { id: bookingId },
@@ -156,6 +170,29 @@ export function getAdminBookingDetails(bookingId: string) {
 
 export function listAvailabilityExceptions() {
   return prisma.availabilityException.findMany({
+    orderBy: { startsAt: "asc" },
+    select: {
+      id: true,
+      type: true,
+      startsAt: true,
+      endsAt: true,
+      reason: true,
+      createdAt: true,
+    },
+  });
+}
+
+export function listAvailabilityExceptionsInRange(startsAt: Date, endsAt: Date) {
+  return prisma.availabilityException.findMany({
+    where: {
+      type: AvailabilityExceptionType.blocked,
+      startsAt: {
+        lt: endsAt,
+      },
+      endsAt: {
+        gt: startsAt,
+      },
+    },
     orderBy: { startsAt: "asc" },
     select: {
       id: true,

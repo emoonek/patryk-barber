@@ -1,5 +1,6 @@
 import { PrismaClient, UserRole } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { BOOKING_SLOT_STARTS, getOpeningHoursForDate } from "../src/modules/booking/opening-hours";
 
 const prisma = new PrismaClient();
 
@@ -48,13 +49,21 @@ const services = [
   },
 ];
 
-const weekdayAvailabilityRules = [1, 2, 3, 4, 5].map((dayOfWeek) => ({
-  dayOfWeek,
-  startTime: "09:00",
-  endTime: "17:00",
-  slotMinutes: 60,
-  isActive: true,
-}));
+const availabilityRules = [1, 2, 3, 4, 5, 6].flatMap((dayOfWeek) => {
+  const openingHours = getOpeningHoursForDate(dateForDayOfWeek(dayOfWeek));
+
+  if (!openingHours.isOpen || !openingHours.firstSlotStart || !openingHours.lastSlotStart) {
+    return [];
+  }
+
+  return {
+    dayOfWeek,
+    startTime: openingHours.firstSlotStart,
+    endTime: slotEndTime(openingHours.lastSlotStart),
+    slotMinutes: 60,
+    isActive: true,
+  };
+});
 
 const galleryImages = [
   {
@@ -171,7 +180,7 @@ async function main() {
     });
   }
 
-  for (const rule of weekdayAvailabilityRules) {
+  for (const rule of availabilityRules) {
     await prisma.availabilityRule.upsert({
       where: {
         dayOfWeek_startTime_endTime: {
@@ -213,6 +222,20 @@ async function main() {
       });
     }
   }
+}
+
+function dateForDayOfWeek(dayOfWeek: number) {
+  return new Date(2026, 6, 19 + dayOfWeek);
+}
+
+function slotEndTime(slotStart: string) {
+  const index = BOOKING_SLOT_STARTS.indexOf(slotStart as (typeof BOOKING_SLOT_STARTS)[number]);
+  return BOOKING_SLOT_STARTS[index + 1] ?? addHours(slotStart, 1);
+}
+
+function addHours(time: string, hoursToAdd: number) {
+  const [hours, minutes] = time.split(":").map(Number);
+  return `${String(hours + hoursToAdd).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
 main()

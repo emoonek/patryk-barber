@@ -1,7 +1,9 @@
-export const DEFAULT_SLOT_TIMES = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"] as const;
+import { BOOKING_SLOT_STARTS, type BookingSlotStart } from "./opening-hours";
+
+export const DEFAULT_SLOT_TIMES = BOOKING_SLOT_STARTS;
 
 export type AvailableSlot = {
-  time: (typeof DEFAULT_SLOT_TIMES)[number];
+  time: BookingSlotStart;
   startAt: Date;
   endAt: Date;
 };

@@ -1,10 +1,11 @@
 import { z } from "zod";
+import { BOOKING_SLOT_STARTS } from "./opening-hours";
 
 export const bookingDateSchema = z
   .string()
   .regex(/^\d{4}-\d{2}-\d{2}$/, "Podaj datę w poprawnym formacie.");
 
-export const bookingTimeSchema = z.enum(["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00"]);
+export const bookingTimeSchema = z.enum(BOOKING_SLOT_STARTS);
 
 export const createBookingSchema = z.object({
   serviceId: z.string().min(1, "Wybierz usługę."),

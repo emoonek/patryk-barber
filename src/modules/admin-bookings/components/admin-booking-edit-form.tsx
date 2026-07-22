@@ -1,7 +1,8 @@
 "use client";
 
-import { useActionState } from "react";
-import { DEFAULT_SLOT_TIMES, formatMoney } from "@/modules/booking/booking.format";
+import { useActionState, useEffect, useState } from "react";
+import { formatMoney } from "@/modules/booking/booking.format";
+import { getBookableSlotStartsForDate, type BookingSlotStart } from "@/modules/booking/opening-hours";
 import { adminUpdateBookingAction, type AdminActionState } from "../admin-booking.actions";
 import { inputDateValue, inputTimeValue } from "../admin-booking.format";
 import { AdminActionMessage } from "./admin-action-message";
@@ -28,6 +29,19 @@ const initialState: AdminActionState = {};
 
 export function AdminBookingEditForm({ booking, services }: AdminBookingEditFormProps) {
   const [state, formAction, pending] = useActionState(adminUpdateBookingAction, initialState);
+  const initialDate = inputDateValue(booking.startAt);
+  const initialTime = inputTimeValue(booking.startAt);
+  const [selectedDate, setSelectedDate] = useState(initialDate);
+  const slotTimes = getBookableSlotStartsForDate(selectedDate);
+  const [selectedTime, setSelectedTime] = useState(() =>
+    slotTimes.includes(initialTime as BookingSlotStart) ? initialTime : (slotTimes[0] ?? ""),
+  );
+
+  useEffect(() => {
+    if (!slotTimes.includes(selectedTime as BookingSlotStart)) {
+      setSelectedTime(slotTimes[0] ?? "");
+    }
+  }, [selectedTime, slotTimes]);
 
   return (
     <form action={formAction} className="grid gap-4 border border-white/10 bg-black/20 p-6">
@@ -55,9 +69,10 @@ export function AdminBookingEditForm({ booking, services }: AdminBookingEditForm
           Data
           <input
             className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
-            defaultValue={inputDateValue(booking.startAt)}
             name="date"
+            onChange={(event) => setSelectedDate(event.target.value)}
             type="date"
+            value={selectedDate}
           />
           {state.errors?.date ? <span className="text-red-300">{state.errors.date[0]}</span> : null}
         </label>
@@ -66,10 +81,12 @@ export function AdminBookingEditForm({ booking, services }: AdminBookingEditForm
           Godzina
           <select
             className="border border-white/10 bg-[#120f0d] px-4 py-3 text-barber-cream"
-            defaultValue={inputTimeValue(booking.startAt)}
             name="time"
+            onChange={(event) => setSelectedTime(event.target.value)}
+            value={selectedTime}
           >
-            {DEFAULT_SLOT_TIMES.map((time) => (
+            {slotTimes.length === 0 ? <option value="">Salon nieczynny</option> : null}
+            {slotTimes.map((time) => (
               <option key={time} value={time}>
                 {time}
               </option>

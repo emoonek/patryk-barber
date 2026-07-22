@@ -15,6 +15,7 @@ import {
   formatSlotKey,
   formatTime,
 } from "@/modules/booking/booking.format";
+import { assertSlotWithinOpeningHours } from "@/modules/booking/opening-hours";
 import type {
   AdminCancelBookingInput,
   AdminCreateBookingInput,
@@ -95,6 +96,8 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
   const now = new Date();
   const startAt = dateTimeFromParts(input.date, input.time);
 
+  assertSlotWithinOpeningHours(input.date, input.time);
+
   if (startAt <= now) {
     throw new Error("Nie mozna utworzyc rezerwacji w przeszlosci.");
   }
@@ -161,6 +164,8 @@ export async function adminCreateBooking(adminUserId: string, input: AdminCreate
 
 export async function adminUpdateBooking(adminUserId: string, input: AdminUpdateBookingInput) {
   const startAt = dateTimeFromParts(input.date, input.time);
+
+  assertSlotWithinOpeningHours(input.date, input.time);
 
   try {
     await prisma.$transaction(
@@ -341,6 +346,8 @@ export async function blockSingleSlot(input: BlockSlotInput) {
   }
 
   const startsAt = dateTimeFromParts(input.date, input.time);
+  assertSlotWithinOpeningHours(input.date, input.time);
+
   const endsAt = addMinutes(startsAt, service.durationMinutes);
 
   await prisma.availabilityException.create({
